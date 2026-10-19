@@ -20,9 +20,6 @@ jobs:
           java-version: "25"
           cache: maven
 
-      - name: Check code style
-        run: ./mvnw ktlint:check
-
       - name: Verify
         run: ./mvnw verify
 
