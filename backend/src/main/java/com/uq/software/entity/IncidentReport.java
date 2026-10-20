@@ -10,14 +10,25 @@ public class IncidentReport {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @Column(nullable = false)
   private Long deliveryId;
+  @Column(nullable = false)
   private Long userId;
+  @Column(nullable = false)
   private String incidentType;
+  @Column(nullable = false)
   private String description;
+  @Column(nullable = false)
   private String location;
+  @Column(nullable = false)
   private String status;
+  @Column(nullable = false)
   private String evidence;
+  @Column(nullable = false)
   private Long timestamp;
+
+  protected IncidentReport() {
+  }
 
   public IncidentReport(Long deliveryId, Long userId, String incidentType, String description, String location,
       String status, String evidence, Long timestamp) {

@@ -11,9 +11,15 @@ public class PasswordResetToken {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @Column(unique = true, nullable = false)
   private String token;
+  @Column(nullable = false)
   private Boolean isUsed = false;
+  @Column(nullable = false)
   private Long userId;
+
+  protected PasswordResetToken() {
+  }
 
   public PasswordResetToken(Long userId) {
     this.token = UUID.randomUUID().toString();

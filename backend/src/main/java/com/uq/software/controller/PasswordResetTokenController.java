@@ -1,10 +1,10 @@
 package com.uq.software.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.uq.software.controller.dto.EmailRequestDTO;
 import com.uq.software.controller.dto.PasswordRecoveryRequestDTO;
@@ -15,7 +15,7 @@ import com.uq.software.repository.UserRepository;
 
 import jakarta.validation.Valid;
 
-@Service
+@RestController
 @RequestMapping("/password-recovery")
 public class PasswordResetTokenController {
 
@@ -28,7 +28,7 @@ public class PasswordResetTokenController {
     this.userRepository = userRepository;
   }
 
-  @PostMapping("/")
+  @PostMapping
   public ResponseEntity<Void> getByToken(@Valid @RequestBody PasswordRecoveryRequestDTO request) {
     PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken()).orElse(null);
 
@@ -61,6 +61,7 @@ public class PasswordResetTokenController {
     }
     PasswordResetToken resetToken = new PasswordResetToken(user.getId());
     passwordResetTokenRepository.save(resetToken);
+    // TODO: Send email
     return ResponseEntity.ok().build();
   }
 }
