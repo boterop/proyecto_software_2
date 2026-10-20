@@ -19,11 +19,8 @@ public class IncidentReportDTO {
   private String status;
   @NotBlank(message = "Evidence is required")
   private String evidence;
-  @NotBlank(message = "Timestamp is required")
+  @NotNull(message = "Timestamp is required")
   private Long timestamp;
-
-  public IncidentReportDTO() {
-  }
 
   public IncidentReportDTO(Long deliveryId, Long userId, String incidentType, String description,
       String location, String status, String evidence, Long timestamp) {

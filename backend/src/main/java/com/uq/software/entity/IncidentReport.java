@@ -19,9 +19,6 @@ public class IncidentReport {
   private String evidence;
   private Long timestamp;
 
-  protected IncidentReport() {
-  }
-
   public IncidentReport(Long deliveryId, Long userId, String incidentType, String description, String location,
       String status, String evidence, Long timestamp) {
     this.deliveryId = deliveryId;
@@ -81,5 +78,19 @@ public class IncidentReport {
 
   public Long getTimestamp() {
     return timestamp;
+  }
+
+  public String toJSON() {
+    return "{" +
+        "\"id\":" + id +
+        ", \"deliveryId\":" + deliveryId +
+        ", \"userId\":" + userId +
+        ", \"incidentType\":\"" + incidentType + "\"" +
+        ", \"description\":\"" + description + "\"" +
+        ", \"location\":\"" + location + "\"" +
+        ", \"status\":\"" + status + "\"" +
+        ", \"evidence\":\"" + evidence + "\"" +
+        ", \"timestamp\":" + timestamp +
+        "}";
   }
 }

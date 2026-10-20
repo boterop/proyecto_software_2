@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/incident-reports")
+@RequestMapping("/incident-reports")
 public class IncidentReportController {
 
   private final IncidentReportService incidentReportService;
