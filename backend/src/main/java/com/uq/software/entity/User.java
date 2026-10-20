@@ -35,4 +35,8 @@ public class User {
   public String getPassword() {
     return password;
   }
+
+  public void updatePassword(String newPassword) {
+    this.password = newPassword; // TODO: Implement password hashing
+  }
 }
