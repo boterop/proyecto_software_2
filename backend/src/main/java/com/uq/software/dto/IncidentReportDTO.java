@@ -1,22 +1,32 @@
-package com.uq.software.application.dto;
+package com.uq.software.dto;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public class IncidentReportDTO {
   private Long id;
+  @NotNull(message = "Delivery ID is required")
   private Long deliveryId;
+  @NotNull(message = "User ID is required")
   private Long userId;
+  @NotBlank(message = "Incident type is required")
   private String incidentType;
+  @NotBlank(message = "Description is required")
   private String description;
+  @NotBlank(message = "Location is required")
   private String location;
+  @NotBlank(message = "Status is required")
   private String status;
+  @NotBlank(message = "Evidence is required")
   private String evidence;
+  @NotBlank(message = "Timestamp is required")
   private Long timestamp;
 
   public IncidentReportDTO() {
   }
 
-  public IncidentReportDTO(Long id, Long deliveryId, Long userId, String incidentType, String description,
+  public IncidentReportDTO(Long deliveryId, Long userId, String incidentType, String description,
       String location, String status, String evidence, Long timestamp) {
-    this.id = id;
     this.deliveryId = deliveryId;
     this.userId = userId;
     this.incidentType = incidentType;
@@ -27,7 +37,6 @@ public class IncidentReportDTO {
     this.timestamp = timestamp;
   }
 
-  // Getters and Setters
   public Long getId() {
     return id;
   }
