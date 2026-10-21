@@ -12,7 +12,9 @@ import com.uq.software.entity.PasswordResetToken;
 import com.uq.software.entity.User;
 import com.uq.software.repository.PasswordResetTokenRepository;
 import com.uq.software.repository.UserRepository;
+import com.uq.software.service.EmailService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -21,15 +23,17 @@ public class PasswordResetTokenController {
 
   private final PasswordResetTokenRepository passwordResetTokenRepository;
   private final UserRepository userRepository;
+  private final EmailService emailService;
 
   public PasswordResetTokenController(PasswordResetTokenRepository passwordResetTokenRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository, EmailService emailService) {
     this.passwordResetTokenRepository = passwordResetTokenRepository;
     this.userRepository = userRepository;
+    this.emailService = emailService;
   }
 
   @PostMapping
-  public ResponseEntity<Void> getByToken(@Valid @RequestBody PasswordRecoveryRequestDTO request) {
+  public ResponseEntity<Void> updatePassword(@Valid @RequestBody PasswordRecoveryRequestDTO request) {
     PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken()).orElse(null);
 
     if (resetToken == null) {
@@ -54,14 +58,18 @@ public class PasswordResetTokenController {
   }
 
   @PostMapping("/reset")
-  public ResponseEntity<Void> getByEmail(@Valid @RequestBody EmailRequestDTO request) {
+  public ResponseEntity<Void> reset(@Valid @RequestBody EmailRequestDTO request, HttpServletRequest httpRequest) {
     User user = userRepository.findByEmail(request.getEmail()).orElse(null);
     if (user == null) {
       return ResponseEntity.ok().build();
     }
     PasswordResetToken resetToken = new PasswordResetToken(user.getId());
     passwordResetTokenRepository.save(resetToken);
-    // TODO: Send email
+
+    String domain = httpRequest.getHeader("Origin");
+    emailService.send(user.getEmail(), "Reset your password",
+        "Click here to reset your password: " + domain + "/password-recovery/reset?token=" + resetToken.getToken());
+
     return ResponseEntity.ok().build();
   }
 }
