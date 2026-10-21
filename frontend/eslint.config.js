@@ -14,11 +14,11 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        API_URL: "readonly",
+      },
       parserOptions: { ecmaFeatures: { jsx: true } },
-    },
-    globals: {
-      API_URL: "readonly",
     },
   },
 ]);
