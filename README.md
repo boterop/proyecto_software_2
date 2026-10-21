@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/boterop/proyecto_software_2/badge.svg?branch=development)](https://coveralls.io/github/boterop/proyecto_software_2?branch=development)
+
 # Enunciado del Proyecto: Sistema de Gestión de Logística y Entregas ("UQDelivery")
 
 ## 1. Descripción General del Proyecto
