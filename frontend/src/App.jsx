@@ -14,6 +14,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CreateShipment from "./pages/CreateShipment";
+import CreateIncidentReport from "./pages/CreateIncidentReport";
 import Profile from "./pages/Profile";
 import AdminUsers from "./pages/AdminUsers";
 import { useAuth } from "./hooks/useAuth";
@@ -47,17 +48,17 @@ const RequireUnAuth = () => {
 };
 
 const RequireAdmin = () => {
-    const { isAdmin, loading } = useAuth();
+  const { isAdmin, loading } = useAuth();
 
-    if (loading) {
-        return null;
-    }
+  if (loading) {
+    return null;
+  }
 
-    if (!isAdmin) {
-        return <Navigate to="/" replace />;
-    }
+  if (!isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
-    return <Outlet />;
+  return <Outlet />;
 };
 
 const App = () => (
@@ -72,11 +73,15 @@ const App = () => (
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Home />} />
         <Route path="/shipments/new" element={<CreateShipment />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route element={<RequireAdmin />}>
-              <Route path="/profile/:userId" element={<Profile />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-          </Route>
+        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/incident-reports/new"
+          element={<CreateIncidentReport />}
+        />
+        <Route element={<RequireAdmin />}>
+          <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+        </Route>
       </Route>
     </Routes>
   </BrowserRouter>
