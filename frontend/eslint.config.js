@@ -21,5 +21,8 @@ export default defineConfig([
       },
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      "eol-last": ["error", "always"],
+    },
   },
 ]);

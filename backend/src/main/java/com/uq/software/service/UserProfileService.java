@@ -3,7 +3,6 @@ package com.uq.software.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.uq.software.dto.UserProfileRequest;
 import com.uq.software.dto.UserProfileResponse;
@@ -30,7 +29,7 @@ public class UserProfileService {
     }
 
     /** Crea o actualiza el perfil. Empty si el usuario no existe. */
-    @Transactional
+
     public Optional<UserProfileResponse> save(Long userId, UserProfileRequest request) {
         return userRepository.findById(userId).map(user -> {
             UserProfile profile = userProfileRepository.findByUserId(userId)
