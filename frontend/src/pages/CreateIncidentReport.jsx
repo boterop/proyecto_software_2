@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Container,
+  createFilterOptions,
   MenuItem,
   Paper,
   TextField,
@@ -34,18 +36,23 @@ const CreateIncidentReport = () => {
     const loadData = async () => {
       try {
         const [deliveriesResponse, usersResponse] = await Promise.all([
-          fetch(`${API_URL}/deliveries`),
+          fetch(`${API_URL}/shipments`),
           fetch(`${API_URL}/users`),
         ]);
 
-        if (!deliveriesResponse.ok || !usersResponse.ok) {
-          throw new Error("Failed to load data");
+        if (!deliveriesResponse.ok) {
+          throw new Error("Failed to load deliveries.");
         }
 
         setDeliveries(await deliveriesResponse.json());
+
+        if (!usersResponse.ok) {
+          throw new Error("Failed to load users.");
+        }
+
         setUsers(await usersResponse.json());
-      } catch {
-        setMessage("Failed to load deliveries or users.");
+      } catch (error) {
+        setMessage(error.message);
       }
     };
 
@@ -124,6 +131,15 @@ const CreateIncidentReport = () => {
     reader.readAsDataURL(file);
   };
 
+  const filter = createFilterOptions({
+    stringify: (delivery) =>
+      `${delivery.trackingCode} ${delivery.packageDescription}`,
+  });
+
+  const userFilter = createFilterOptions({
+    stringify: (user) => `${user.name} ${user.email}`,
+  });
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -156,39 +172,54 @@ const CreateIncidentReport = () => {
             </Alert>
           )}
           <Box component="form" onSubmit={handleSubmit}>
-            <TextField
+            <Autocomplete
               fullWidth
-              required
-              select
-              label="Delivery"
-              name="deliveryId"
-              value={form.deliveryId}
-              onChange={handleChange}
-              margin="normal"
-            >
-              {deliveries.map((delivery) => (
-                <MenuItem key={delivery.id} value={delivery.id}>
-                  {`Delivery #${delivery.id}`}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={deliveries}
+              filterOptions={filter}
+              value={
+                deliveries.find(
+                  (delivery) => delivery.id === form.deliveryId,
+                ) || null
+              }
+              onChange={(_, delivery) => {
+                handleChange({
+                  target: {
+                    name: "deliveryId",
+                    value: delivery?.id || "",
+                  },
+                });
+              }}
+              getOptionLabel={(delivery) =>
+                `${delivery.trackingCode} (${delivery.packageDescription.substring(0, 20)})`
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  required
+                  label="Delivery"
+                  margin="normal"
+                />
+              )}
+            />
 
-            <TextField
+            <Autocomplete
               fullWidth
-              required
-              select
-              label="User"
-              name="userId"
-              value={form.userId}
-              onChange={handleChange}
-              margin="normal"
-            >
-              {users.map((user) => (
-                <MenuItem key={user.id} value={user.id}>
-                  {user.username} - {user.email}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={users}
+              filterOptions={userFilter}
+              value={users.find((user) => user.id === form.userId) || null}
+              onChange={(_, user) => {
+                handleChange({
+                  target: {
+                    name: "userId",
+                    value: user?.id || "",
+                  },
+                });
+              }}
+              getOptionLabel={(user) => `${user.name} - ${user.email}`}
+              renderInput={(params) => (
+                <TextField {...params} required label="User" margin="normal" />
+              )}
+            />
 
             <TextField
               fullWidth
