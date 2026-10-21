@@ -17,10 +17,12 @@ describe("ForgotPassword Component", () => {
       name: "Email",
     });
 
+    const submitButton = screen.getByRole("button", {
+      name: "Send reset link",
+    });
+
     await userEvent.type(emailInput, "test@example.com");
-    await userEvent.click(
-      screen.getByRole("button", { name: "Send reset link" }),
-    );
+    await userEvent.click(submitButton);
 
     expect(
       await screen.findByText(

@@ -80,6 +80,7 @@ const ResetPassword = () => {
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
+              id="newPassword"
               label="New password"
               type="password"
               value={password}
@@ -91,6 +92,7 @@ const ResetPassword = () => {
 
             <TextField
               fullWidth
+              id="confirmPassword"
               label="Confirm password"
               type="password"
               value={confirmPassword}
