@@ -39,6 +39,7 @@ public class SecurityConfig {
 
         http.cors(Customizer.withDefaults())
 
+
                 // API stateless autenticada mediante JWT.
                 .csrf(AbstractHttpConfigurer::disable)
 
@@ -55,6 +56,7 @@ public class SecurityConfig {
                 // Reglas de acceso a las rutas.
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
 
                         .requestMatchers(
                                 HttpMethod.POST,

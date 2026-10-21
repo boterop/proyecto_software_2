@@ -27,8 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<!-- CAMBIO HU-01: 25 -> 21 (acordar con el equipo qué JDK usar) -->
-		<java.version>21</java.version>
+		<java.version>25</java.version>
 		<!-- CAMBIO HU-01 -->
 		<jjwt.version>0.12.6</jjwt.version>
 	</properties>
