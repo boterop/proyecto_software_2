@@ -3,9 +3,15 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import "./config/globals";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme/theme.js";
+import CssBaseline from "@mui/material/CssBaseline";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+      <CssBaseline />
+    </ThemeProvider>
   </StrictMode>,
 );

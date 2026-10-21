@@ -1,4 +1,13 @@
 import { useState } from "react";
+import {
+  Alert,
+  Box,
+  Button,
+  Container,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -35,50 +44,54 @@ const ForgotPassword = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md">
-        <h1 className="text-2xl font-bold text-gray-900">Forgot password?</h1>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Forgot password?
+          </Typography>
 
-        <p className="mt-2 text-sm text-gray-600">
-          Enter your email and we'll send you a link to reset your password.
-        </p>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Enter your email and we'll send you a link to reset your password.
+          </Typography>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-
-            <input
-              id="email"
+          <Box component="form" onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              label="Email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+              margin="normal"
             />
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Sending..." : "Send reset link"}
-          </button>
-        </form>
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              sx={{ mt: 2 }}
+            >
+              {loading ? "Sending..." : "Send reset link"}
+            </Button>
+          </Box>
 
-        {message && (
-          <p className="mt-5 rounded-lg bg-gray-100 px-4 py-3 text-sm text-gray-700">
-            {message}
-          </p>
-        )}
-      </div>
-    </main>
+          {message && (
+            <Alert severity="info" sx={{ mt: 3 }}>
+              {message}
+            </Alert>
+          )}
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
