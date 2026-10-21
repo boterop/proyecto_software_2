@@ -248,21 +248,6 @@ const CreateIncidentReport = () => {
               )}
             </Box>
 
-            <TextField
-              fullWidth
-              required
-              select
-              label="Status"
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              margin="normal"
-            >
-              <MenuItem value="OPEN">Open</MenuItem>
-              <MenuItem value="IN_REVIEW">In review</MenuItem>
-              <MenuItem value="RESOLVED">Resolved</MenuItem>
-            </TextField>
-
             <Button
               fullWidth
               type="submit"
