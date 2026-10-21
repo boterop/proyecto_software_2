@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import process from "node:process";
 
 let backend;
 
@@ -6,6 +7,10 @@ export default async function setup() {
   backend = spawn("./mvnw", ["spring-boot:run"], {
     cwd: "../backend",
     stdio: "inherit",
+    env: {
+      ...process.env,
+      TEST_ENDPOINTS_ENABLED: "true",
+    },
   });
 
   await waitForBackend("http://localhost:8080");
