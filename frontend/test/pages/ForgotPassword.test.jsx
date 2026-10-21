@@ -5,6 +5,12 @@ import ForgotPassword from "@pages/ForgotPassword";
 import userEvent from "@testing-library/user-event";
 
 describe("ForgotPassword Component", () => {
+  let user;
+
+  beforeAll(() => {
+    user = userEvent.setup();
+  });
+
   it("renders without crashing", () => {
     const { container } = render(<ForgotPassword />);
     expect(container).toBeTruthy();
@@ -21,8 +27,8 @@ describe("ForgotPassword Component", () => {
       name: "Send reset link",
     });
 
-    await userEvent.type(emailInput, "test@example.com");
-    await userEvent.click(submitButton);
+    await user.type(emailInput, "test@example.com");
+    await user.click(submitButton);
 
     expect(
       await screen.findByText(
