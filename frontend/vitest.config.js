@@ -12,7 +12,7 @@ export default mergeConfig(
       setupFiles: ["./test/setup.js"],
       coverage: {
         provider: "v8",
-        reporter: ["text", "json", "html"],
+        reporter: ["text", "lcov"],
       },
       globals: true,
       globalSetup: "./test/globalSetup.js",

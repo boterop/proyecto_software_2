@@ -28,3 +28,12 @@ jobs:
 
       - name: Build Package
         run: ./mvnw package -DskipTests
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: backend/target/site/jacoco/jacoco.xml
+          format: jacoco
+          flag-name: backend
+          parallel: true

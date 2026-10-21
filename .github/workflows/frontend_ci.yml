@@ -44,3 +44,11 @@ jobs:
 
       - name: Run Tests
         run: pnpm test --run
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: frontend/coverage/lcov.info
+          flag-name: frontend
+          parallel: true
