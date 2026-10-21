@@ -10,10 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import LocationPicker from "../components/LocationPicker";
 
 const CreateIncidentReport = () => {
   const [deliveries, setDeliveries] = useState([]);
   const [users, setUsers] = useState([]);
+  const [location, setLocation] = useState(null);
 
   const [form, setForm] = useState({
     deliveryId: "",
@@ -73,6 +75,7 @@ const CreateIncidentReport = () => {
         },
         body: JSON.stringify({
           ...form,
+          location: `${location.latitude},${location.longitude}`,
           deliveryId: Number(form.deliveryId),
           userId: Number(form.userId),
           timestamp: Date.now(),
@@ -204,15 +207,19 @@ const CreateIncidentReport = () => {
               margin="normal"
             />
 
-            <TextField
-              fullWidth
-              required
-              label="Location"
-              name="location"
-              value={form.location}
-              onChange={handleChange}
-              margin="normal"
-            />
+            <Typography fontWeight="bold" sx={{ mt: 2, mb: 1 }}>
+              Location
+            </Typography>
+
+            <LocationPicker value={location} onChange={setLocation} />
+
+            {location && (
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Latitude: {location.latitude}
+                <br />
+                Longitude: {location.longitude}
+              </Typography>
+            )}
 
             <Box sx={{ mt: 2 }}>
               <Button
