@@ -8,6 +8,7 @@ import {
   Paper,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 
 const ResetPassword = () => {
@@ -17,6 +18,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,6 +50,7 @@ const ResetPassword = () => {
       setMessage("Your password has been reset successfully.");
       setPassword("");
       setConfirmPassword("");
+      setRedirecting(true);
       setTimeout(() => (window.location.href = "/login"), 3000);
     } catch {
       setMessage("The reset link is invalid or has expired.");
@@ -112,6 +115,11 @@ const ResetPassword = () => {
             <Alert severity="info" sx={{ mt: 3 }}>
               {message}
             </Alert>
+          )}
+          {redirecting && (
+            <div className="flex w-full items-center justify-center p-4">
+              <CircularProgress size={24} />
+            </div>
           )}
         </Paper>
       </Box>
