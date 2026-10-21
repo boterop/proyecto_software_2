@@ -67,8 +67,10 @@ public class PasswordResetTokenController {
     passwordResetTokenRepository.save(resetToken);
 
     String domain = httpRequest.getHeader("Origin");
+    String page = "/reset-password/";
+
     emailService.send(user.getEmail(), "Reset your password",
-        "Click here to reset your password: " + domain + "/password-recovery/reset?token=" + resetToken.getToken());
+        "Click here to reset your password: " + domain + page + resetToken.getToken());
 
     return ResponseEntity.ok().build();
   }
