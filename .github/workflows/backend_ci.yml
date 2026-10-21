@@ -30,6 +30,9 @@ jobs:
       - name: Run Tests
         run: ./mvnw test
 
+      - name: Run formatter
+        run: ./mvnw spotless:check
+
       - name: Build Package
         run: ./mvnw package
 
