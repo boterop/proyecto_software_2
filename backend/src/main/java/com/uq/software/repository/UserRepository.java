@@ -8,4 +8,7 @@ import com.uq.software.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByEmail(String email);
+
+  // HU-01 (nuevo)
+  boolean existsByEmail(String email);
 }

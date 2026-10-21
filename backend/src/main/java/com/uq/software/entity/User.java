@@ -16,15 +16,28 @@ public class User {
   @Column(unique = true, nullable = false)
   private String email;
   @Column(nullable = false)
-  private String password;
+  private String password; // HU-01: guarda SIEMPRE el hash BCrypt, nunca texto plano
+
+  // HU-01 (nuevo): rol para RBAC. El default en la columna permite que "ddl-auto=update"
+  // agregue la columna a una BD SQLite que ya tenga usuarios.
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
+  private Role role = Role.CLIENTE_EMISOR;
 
   protected User() {
   }
 
+  // Constructor original: se mantiene para no romper el código ni los tests existentes.
   public User(String name, String email, String password) {
     this.name = name;
     this.email = email;
     this.password = password;
+  }
+
+  // HU-01 (nuevo)
+  public User(String name, String email, String password, Role role) {
+    this(name, email, password);
+    this.role = role;
   }
 
   public Long getId() {
@@ -43,7 +56,13 @@ public class User {
     return password;
   }
 
-  public void updatePassword(String newPassword) {
-    this.password = newPassword; // TODO: Implement password hashing
+  public Role getRole() {
+    return role;
+  }
+
+
+  public void updatePassword(String newPasswordHash) {
+    this.password = newPasswordHash;
   }
 }
+
