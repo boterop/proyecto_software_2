@@ -21,13 +21,13 @@ jobs:
           cache: maven
 
       - name: Verify
-        run: ./mvnw verify
+        run: ./mvnw verify -DskipTests
 
       - name: Run Tests
         run: ./mvnw test
 
       - name: Build Package
-        run: ./mvnw package -DskipTests
+        run: ./mvnw package
 
       - name: Coveralls
         uses: coverallsapp/github-action@v2
