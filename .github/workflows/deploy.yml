@@ -65,6 +65,8 @@ jobs:
           context: ./
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME }}_front:latest
+          build-args: |
+            VITE_API_URL=${{ vars.VITE_API_URL }}
 
   deploy:
     if: ${{ github.event.pull_request.merged }}
