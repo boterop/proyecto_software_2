@@ -143,6 +143,18 @@ const CreateIncidentReport = () => {
             Provide the details of the incident.
           </Typography>
 
+          {message && (
+            <Alert
+              severity={
+                message === "Incident reported successfully."
+                  ? "success"
+                  : "error"
+              }
+              sx={{ mt: 3 }}
+            >
+              {message}
+            </Alert>
+          )}
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
