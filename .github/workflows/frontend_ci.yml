@@ -36,4 +36,4 @@ jobs:
         run: pnpm run build
 
       - name: Run Tests
-        run: echo "No tests"
+        run: pnpm test --run
