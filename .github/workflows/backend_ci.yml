@@ -1,6 +1,9 @@
 name: Backend CI
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types: [closed, review_requested, ready_for_review, synchronize, opened]
 
@@ -21,10 +24,19 @@ jobs:
           cache: maven
 
       - name: Verify
-        run: ./mvnw verify
+        run: ./mvnw verify -DskipTests
 
       - name: Run Tests
         run: ./mvnw test
 
       - name: Build Package
-        run: ./mvnw package -DskipTests
+        run: ./mvnw package
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: backend/target/site/jacoco/jacoco.xml
+          format: jacoco
+          flag-name: backend
+          parallel: true
