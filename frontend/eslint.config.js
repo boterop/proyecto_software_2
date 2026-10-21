@@ -16,6 +16,7 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.vitest,
         API_URL: "readonly",
       },
       parserOptions: { ecmaFeatures: { jsx: true } },
