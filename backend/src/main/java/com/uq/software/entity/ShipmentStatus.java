@@ -1,5 +1,9 @@
 package com.uq.software.entity;
 
 public enum ShipmentStatus {
-  PENDING, ASSIGNED, IN_TRANSIT, DELIVERED, CANCELLED
+  PENDING,
+  ASSIGNED,
+  IN_TRANSIT,
+  DELIVERED,
+  CANCELLED
 }

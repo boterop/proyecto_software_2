@@ -1,39 +1,39 @@
 package com.uq.software.controller;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.uq.software.entity.IncidentReport;
-import com.uq.software.repository.IncidentReportRepository;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.uq.software.entity.IncidentReport;
+import com.uq.software.repository.IncidentReportRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class IncidentReportControllerTest {
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private IncidentReportRepository incidentReportRepository;
+  @Autowired private IncidentReportRepository incidentReportRepository;
 
-  private IncidentReport report = new IncidentReport(1L, 2L, "type", "description", "location", "status", "evidence",
-      3L);
+  private IncidentReport report =
+      new IncidentReport(1L, 2L, "type", "description", "location", "status", "evidence", 3L);
 
   @Test
   void testCreateIncidentReport() throws Exception {
-    mockMvc.perform(post("/incident-reports")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(report.toJSON()))
+    mockMvc
+        .perform(
+            post("/incident-reports")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(report.toJSON()))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").isNumber())
         .andExpect(jsonPath("$.incidentType").value("type"));
@@ -43,7 +43,8 @@ class IncidentReportControllerTest {
   void testGetIncidentReport() throws Exception {
     IncidentReport created = incidentReportRepository.save(report);
 
-    mockMvc.perform(get("/incident-reports/" + created.getId()))
+    mockMvc
+        .perform(get("/incident-reports/" + created.getId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(created.getId()))
         .andExpect(jsonPath("$.deliveryId").value(created.getDeliveryId()))
@@ -55,7 +56,8 @@ class IncidentReportControllerTest {
   void testGetIncidentReportByDeliveryID() throws Exception {
     IncidentReport created = incidentReportRepository.save(report);
 
-    mockMvc.perform(get("/incident-reports/delivery/" + created.getDeliveryId()))
+    mockMvc
+        .perform(get("/incident-reports/delivery/" + created.getDeliveryId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].id").value(created.getId()))
@@ -68,7 +70,8 @@ class IncidentReportControllerTest {
   void testGetIncidentReportByUserID() throws Exception {
     IncidentReport created = incidentReportRepository.save(report);
 
-    mockMvc.perform(get("/incident-reports/user/" + created.getUserId()))
+    mockMvc
+        .perform(get("/incident-reports/user/" + created.getUserId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].id").value(created.getId()))

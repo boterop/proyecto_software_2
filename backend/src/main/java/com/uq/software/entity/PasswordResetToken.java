@@ -1,8 +1,7 @@
 package com.uq.software.entity;
 
-import java.util.UUID;
-
 import jakarta.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Table(name = "password_reset_tokens")
@@ -13,13 +12,14 @@ public class PasswordResetToken {
 
   @Column(unique = true, nullable = false)
   private String token;
+
   @Column(nullable = false)
   private Boolean isUsed = false;
+
   @Column(nullable = false)
   private Long userId;
 
-  protected PasswordResetToken() {
-  }
+  protected PasswordResetToken() {}
 
   public PasswordResetToken(Long userId) {
     this.token = UUID.randomUUID().toString();
@@ -55,12 +55,18 @@ public class PasswordResetToken {
   }
 
   public String toJSON() {
-    return "{" +
-        "\"id\":" + id +
-        ", \"token\":\"" + token + "\"" +
-        ", \"isUsed\":" + isUsed +
-        ", \"userId\":\"" + userId + "\"" +
-        "}";
+    return "{"
+        + "\"id\":"
+        + id
+        + ", \"token\":\""
+        + token
+        + "\""
+        + ", \"isUsed\":"
+        + isUsed
+        + ", \"userId\":\""
+        + userId
+        + "\""
+        + "}";
   }
 
   public void markAsUsed() {

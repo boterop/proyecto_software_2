@@ -16,5 +16,4 @@ public record ShipmentResponseDTO(
     Double heightCm,
     Double weightKg,
     String status,
-    Long createdAt) {
-}
+    Long createdAt) {}

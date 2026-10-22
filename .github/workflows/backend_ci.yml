@@ -27,6 +27,9 @@ jobs:
       - name: Verify
         run: ./mvnw verify -DskipTests
 
+      - name: Run formatter
+        run: ./mvnw spotless:check
+
       - name: Run Tests
         run: ./mvnw test
 
