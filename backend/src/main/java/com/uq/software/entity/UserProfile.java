@@ -17,8 +17,7 @@ public class UserProfile {
   private String address;
   private String city;
 
-  protected UserProfile() {
-  }
+  protected UserProfile() {}
 
   public UserProfile(Long userId) {
     this.userId = userId;

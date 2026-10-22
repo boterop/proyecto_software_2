@@ -61,8 +61,7 @@ public class Shipment {
   @Column(nullable = false)
   private Long createdAt;
 
-  protected Shipment() {
-  }
+  protected Shipment() {}
 
   public Shipment(
       Long senderId,

@@ -19,8 +19,7 @@ public class PasswordResetToken {
   @Column(nullable = false)
   private Long userId;
 
-  protected PasswordResetToken() {
-  }
+  protected PasswordResetToken() {}
 
   public PasswordResetToken(Long userId) {
     this.token = UUID.randomUUID().toString();

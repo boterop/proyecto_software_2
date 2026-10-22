@@ -27,8 +27,7 @@ public class User {
   @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
   private Role role = Role.CLIENTE_EMISOR;
 
-  protected User() {
-  }
+  protected User() {}
 
   // Constructor original: se mantiene para no romper el código ni los tests
   // existentes.

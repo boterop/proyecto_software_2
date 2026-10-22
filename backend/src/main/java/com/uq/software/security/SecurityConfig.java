@@ -20,7 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@ConditionalOnProperty(name = "app.test.security.permit-all", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(
+    name = "app.test.security.permit-all",
+    havingValue = "false",
+    matchIfMissing = true)
 public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtFilter;
@@ -44,25 +47,27 @@ public class SecurityConfig {
 
         // Cabeceras de seguridad HTTP.
         .headers(
-            h -> h.frameOptions(f -> f.deny())
-                .contentSecurityPolicy(
-                    csp -> csp.policyDirectives("default-src 'none'; frame-ancestors 'none'")))
+            h ->
+                h.frameOptions(f -> f.deny())
+                    .contentSecurityPolicy(
+                        csp -> csp.policyDirectives("default-src 'none'; frame-ancestors 'none'")))
 
         // Reglas de acceso a las rutas.
         .authorizeHttpRequests(
-            auth -> auth.requestMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login")
-                .permitAll()
-                .requestMatchers(
-                    HttpMethod.POST, "/password-recovery", "/password-recovery/reset")
-                .permitAll()
-                .requestMatchers("/test/**")
-                .permitAll()
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .anyRequest()
-                .authenticated())
+            auth ->
+                auth.requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login")
+                    .permitAll()
+                    .requestMatchers(
+                        HttpMethod.POST, "/password-recovery", "/password-recovery/reset")
+                    .permitAll()
+                    .requestMatchers("/test/**")
+                    .permitAll()
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .authenticated())
 
         // Respuesta para solicitudes no autenticadas.
         .exceptionHandling(

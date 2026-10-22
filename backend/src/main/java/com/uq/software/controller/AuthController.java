@@ -1,18 +1,14 @@
 package com.uq.software.controller;
 
-import com.uq.software.dto.AuthResponse;
 import com.uq.software.dto.LoginRequest;
 import com.uq.software.dto.RegisterRequest;
 import com.uq.software.dto.UserResponse;
 import com.uq.software.repository.UserRepository;
 import com.uq.software.service.AuthService;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * URLs reales (con context-path): POST /api/auth/register, POST
- * /api/auth/login, GET /api/auth/me
+ * URLs reales (con context-path): POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
  */
 @RestController
 @RequestMapping("/auth")
@@ -49,8 +44,8 @@ public class AuthController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request,
-      HttpServletResponse response) {
+  public ResponseEntity<Map<String, String>> register(
+      @Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
     String token = authService.register(request).token().toString();
     addTokenInCookie(response, token);
 
@@ -58,8 +53,8 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequest request,
-      HttpServletResponse response) {
+  public ResponseEntity<Map<String, String>> login(
+      @Valid @RequestBody LoginRequest request, HttpServletResponse response) {
     String token = authService.login(request).token().toString();
     addTokenInCookie(response, token);
 

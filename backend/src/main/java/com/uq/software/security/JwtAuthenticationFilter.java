@@ -55,10 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
           .flatMap(userRepository::findByEmail)
           .ifPresent(
               user -> {
-                var auth = new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
-                    null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+                var auth =
+                    new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
                 SecurityContextHolder.getContext().setAuthentication(auth);
               });
     }

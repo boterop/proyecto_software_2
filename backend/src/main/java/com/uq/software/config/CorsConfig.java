@@ -18,9 +18,10 @@ public class CorsConfig {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        String[] origins = Stream.concat(
-            Stream.of("http://localhost:5173"), Arrays.stream(allowedOrigins.split(",")))
-            .toArray(String[]::new);
+        String[] origins =
+            Stream.concat(
+                    Stream.of("http://localhost:5173"), Arrays.stream(allowedOrigins.split(",")))
+                .toArray(String[]::new);
 
         registry
             .addMapping("/**")

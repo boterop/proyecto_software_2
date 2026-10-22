@@ -23,10 +23,7 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
-  /**
-   * Hash de relleno para igualar el tiempo de respuesta cuando el correo no
-   * existe.
-   */
+  /** Hash de relleno para igualar el tiempo de respuesta cuando el correo no existe. */
   private final String dummyHash;
 
   public AuthService(
@@ -43,15 +40,18 @@ public class AuthService {
     if (userRepository.existsByEmail(email)) {
       throw new EmailAlreadyExistsException();
     }
-    User user = new User(
-        request.name().trim(),
-        email,
-        passwordEncoder.encode(request.password()),
-        Role.CLIENTE_EMISOR);
+    User user =
+        new User(
+            request.name().trim(),
+            email,
+            passwordEncoder.encode(request.password()),
+            Role.CLIENTE_EMISOR);
     try {
       userRepository.saveAndFlush(user);
       return AuthResponse.bearer(
-          jwtService.generateToken(user), jwtService.getExpirationSeconds(), UserResponse.from(user));
+          jwtService.generateToken(user),
+          jwtService.getExpirationSeconds(),
+          UserResponse.from(user));
 
     } catch (DataIntegrityViolationException e) {
       throw new EmailAlreadyExistsException();
