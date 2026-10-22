@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import com.uq.software.dto.AuthResponse;
 import com.uq.software.dto.LoginRequest;
 import com.uq.software.dto.RegisterRequest;
-import com.uq.software.dto.UserResponse;
 import com.uq.software.entity.Role;
 import com.uq.software.entity.User;
 import com.uq.software.exception.EmailAlreadyExistsException;
@@ -49,7 +48,7 @@ class AuthServiceTest {
     when(userRepository.existsByEmail("ana@correo.com")).thenReturn(false);
     when(userRepository.saveAndFlush(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
-    UserResponse response =
+    AuthResponse response =
         authService.register(
             new RegisterRequest("  Ana Pérez ", "  Ana@Correo.COM ", "Clave#1234"));
 
@@ -62,7 +61,7 @@ class AuthServiceTest {
     assertThat(saved.getEmail()).isEqualTo("ana@correo.com");
     assertThat(saved.getName()).isEqualTo("Ana Pérez");
     assertThat(saved.getRole()).isEqualTo(Role.CLIENTE_EMISOR);
-    assertThat(response.email()).isEqualTo("ana@correo.com");
+    assertThat(response.token().length()).isGreaterThan(5);
   }
 
   @Test
