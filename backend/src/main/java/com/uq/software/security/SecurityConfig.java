@@ -1,6 +1,7 @@
 
 package com.uq.software.security;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@ConditionalOnProperty(
+        name = "app.test.security.permit-all",
+        havingValue = "false",
+        matchIfMissing = true
+)
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
