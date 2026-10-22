@@ -20,13 +20,14 @@ public class CorsConfig {
       public void addCorsMappings(CorsRegistry registry) {
         String[] origins =
             Stream.concat(
-                    Stream.of("http://localhost:51738"), Arrays.stream(allowedOrigins.split(",")))
+                    Stream.of("http://localhost:5173"), Arrays.stream(allowedOrigins.split(",")))
                 .toArray(String[]::new);
 
         registry
             .addMapping("/**")
             .allowedOrigins(origins)
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowCredentials(true)
             .allowedHeaders("*");
       }
     };

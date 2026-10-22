@@ -39,9 +39,6 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-    System.out.println(">>> CARGANDO SecurityConfig PRINCIPAL <<<");
-
     http.cors(Customizer.withDefaults())
 
         // API stateless autenticada mediante JWT.

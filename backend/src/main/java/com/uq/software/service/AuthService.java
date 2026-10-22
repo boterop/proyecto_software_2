@@ -35,7 +35,7 @@ public class AuthService {
   }
 
   @Transactional
-  public UserResponse register(RegisterRequest request) {
+  public AuthResponse register(RegisterRequest request) {
     String email = normalize(request.email());
     if (userRepository.existsByEmail(email)) {
       throw new EmailAlreadyExistsException();
@@ -47,9 +47,13 @@ public class AuthService {
             passwordEncoder.encode(request.password()),
             Role.CLIENTE_EMISOR);
     try {
-      return UserResponse.from(userRepository.saveAndFlush(user));
+      userRepository.saveAndFlush(user);
+      return AuthResponse.bearer(
+          jwtService.generateToken(user),
+          jwtService.getExpirationSeconds(),
+          UserResponse.from(user));
+
     } catch (DataIntegrityViolationException e) {
-      // Dos registros simultáneos con el mismo correo: gana la restricción UNIQUE de la BD.
       throw new EmailAlreadyExistsException();
     }
   }

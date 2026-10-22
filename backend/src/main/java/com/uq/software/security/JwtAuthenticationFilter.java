@@ -3,6 +3,7 @@ package com.uq.software.security;
 import com.uq.software.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,18 +31,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
+
+    String token = null;
     String header = request.getHeader("Authorization");
+
     if (header != null
         && header.startsWith(BEARER)
         && SecurityContextHolder.getContext().getAuthentication() == null) {
-      String token = header.substring(BEARER.length()).trim();
+      token = header.substring(BEARER.length()).trim();
+    }
+    if (token == null && request.getCookies() != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if ("access_token".equals(cookie.getName())) {
+          token = cookie.getValue();
+          break;
+        }
+      }
+    }
+
+    if (token != null) {
       jwtService
           .extractValidSubject(token)
           .flatMap(userRepository::findByEmail)
           .ifPresent(
               user -> {
-                // El rol se toma de la BD (no del token) para que un cambio de rol surta efecto de
-                // inmediato.
                 var auth =
                     new UsernamePasswordAuthenticationToken(
                         user.getEmail(),
