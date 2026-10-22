@@ -27,11 +27,11 @@ jobs:
       - name: Verify
         run: ./mvnw verify -DskipTests
 
-      - name: Run Tests
-        run: ./mvnw test
-
       - name: Run formatter
         run: ./mvnw spotless:check
+
+      - name: Run Tests
+        run: ./mvnw test
 
       - name: Build Package
         run: ./mvnw package
