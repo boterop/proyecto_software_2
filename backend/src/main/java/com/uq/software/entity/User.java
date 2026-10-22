@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -20,15 +20,18 @@ public class User {
   @Column(nullable = false)
   private String password; // HU-01: guarda SIEMPRE el hash BCrypt, nunca texto plano
 
-  // HU-01 (nuevo): rol para RBAC. El default en la columna permite que "ddl-auto=update"
+  // HU-01 (nuevo): rol para RBAC. El default en la columna permite que
+  // "ddl-auto=update"
   // agregue la columna a una BD SQLite que ya tenga usuarios.
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
   private Role role = Role.CLIENTE_EMISOR;
 
-  protected User() {}
+  protected User() {
+  }
 
-  // Constructor original: se mantiene para no romper el código ni los tests existentes.
+  // Constructor original: se mantiene para no romper el código ni los tests
+  // existentes.
   public User(String name, String email, String password) {
     this.name = name;
     this.email = email;

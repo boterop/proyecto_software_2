@@ -1,25 +1,28 @@
 import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Box,
-  Button,
-  Link,
-  TextField,
-} from "@mui/material";
+import { Alert, Box, Button, Link, TextField } from "@mui/material";
 import AuthLayout from "../layouts/AuthLayout";
-import { useAuth } from "../context/useAuth";
-import { ApiError } from "../services/api";
+import { api } from "@services/api.js";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const login = async (email, password) => {
+    const response = await api("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al iniciar sesión");
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,12 +34,7 @@ const Login = () => {
       await login(email.trim(), password);
       navigate("/", { replace: true });
     } catch (err) {
-      if (err instanceof ApiError) {
-        setFieldErrors(err.fieldErrors);
-        setFormError(err.detail);
-      } else {
-        setFormError("No se pudo conectar con el servidor. Inténtalo de nuevo.");
-      }
+      setFormError(err.message);
     } finally {
       setLoading(false);
     }

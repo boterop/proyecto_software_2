@@ -23,7 +23,10 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
 
-  /** Hash de relleno para igualar el tiempo de respuesta cuando el correo no existe. */
+  /**
+   * Hash de relleno para igualar el tiempo de respuesta cuando el correo no
+   * existe.
+   */
   private final String dummyHash;
 
   public AuthService(
@@ -35,21 +38,22 @@ public class AuthService {
   }
 
   @Transactional
-  public UserResponse register(RegisterRequest request) {
+  public AuthResponse register(RegisterRequest request) {
     String email = normalize(request.email());
     if (userRepository.existsByEmail(email)) {
       throw new EmailAlreadyExistsException();
     }
-    User user =
-        new User(
-            request.name().trim(),
-            email,
-            passwordEncoder.encode(request.password()),
-            Role.CLIENTE_EMISOR);
+    User user = new User(
+        request.name().trim(),
+        email,
+        passwordEncoder.encode(request.password()),
+        Role.CLIENTE_EMISOR);
     try {
-      return UserResponse.from(userRepository.saveAndFlush(user));
+      userRepository.saveAndFlush(user);
+      return AuthResponse.bearer(
+          jwtService.generateToken(user), jwtService.getExpirationSeconds(), UserResponse.from(user));
+
     } catch (DataIntegrityViolationException e) {
-      // Dos registros simultáneos con el mismo correo: gana la restricción UNIQUE de la BD.
       throw new EmailAlreadyExistsException();
     }
   }

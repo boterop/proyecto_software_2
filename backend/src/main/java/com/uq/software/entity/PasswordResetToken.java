@@ -7,7 +7,7 @@ import java.util.UUID;
 @Table(name = "password_reset_tokens")
 public class PasswordResetToken {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true, nullable = false)
@@ -19,7 +19,8 @@ public class PasswordResetToken {
   @Column(nullable = false)
   private Long userId;
 
-  protected PasswordResetToken() {}
+  protected PasswordResetToken() {
+  }
 
   public PasswordResetToken(Long userId) {
     this.token = UUID.randomUUID().toString();

@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Shipment {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true, nullable = false, updatable = false)
@@ -61,7 +61,8 @@ public class Shipment {
   @Column(nullable = false)
   private Long createdAt;
 
-  protected Shipment() {}
+  protected Shipment() {
+  }
 
   public Shipment(
       Long senderId,

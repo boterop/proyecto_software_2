@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class IncidentReport {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -34,7 +34,8 @@ public class IncidentReport {
   @Column(nullable = false)
   private Long timestamp;
 
-  protected IncidentReport() {}
+  protected IncidentReport() {
+  }
 
   public IncidentReport(
       Long deliveryId,

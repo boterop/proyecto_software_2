@@ -1,27 +1,19 @@
 import { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Box,
-  Button,
-  Link,
-  TextField,
-} from "@mui/material";
+import { Alert, Box, Button, Link, TextField } from "@mui/material";
 import AuthLayout from "../layouts/AuthLayout";
-import { useAuth } from "../context/useAuth";
-import { ApiError } from "../services/api";
 import {
   isPasswordValid,
   PASSWORD_MAX,
   PASSWORD_MESSAGE,
   PASSWORD_MIN,
 } from "../utils/passwordRules";
+import { api } from "../services/api.js";
 
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M} .'-]*$/u;
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,6 +22,17 @@ const Register = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const register = async (name, email, password) => {
+    const response = await api("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al registrar");
+    }
+  };
 
   const validateClient = () => {
     const errors = {};
@@ -70,11 +73,12 @@ const Register = () => {
       await register(name.trim(), email.trim(), password);
       navigate("/", { replace: true });
     } catch (err) {
-      if (err instanceof ApiError) {
-        setFieldErrors(err.fieldErrors);
-        setFormError(err.detail);
+      if (err) {
+        setFormError(err.message);
       } else {
-        setFormError("No se pudo conectar con el servidor. Inténtalo de nuevo.");
+        setFormError(
+          "No se pudo conectar con el servidor. Inténtalo de nuevo.",
+        );
       }
     } finally {
       setLoading(false);
