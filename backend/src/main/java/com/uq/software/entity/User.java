@@ -15,11 +15,11 @@ public class User {
 
   @Column(unique = true, nullable = false)
   private String email;
+
   @Column(nullable = false)
   private String password;
 
-  protected User() {
-  }
+  protected User() {}
 
   public User(String name, String email, String password) {
     this.name = name;

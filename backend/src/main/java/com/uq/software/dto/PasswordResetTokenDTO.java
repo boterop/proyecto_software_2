@@ -5,9 +5,12 @@ import jakarta.validation.constraints.NotNull;
 
 public class PasswordResetTokenDTO {
   private Long id;
+
   @NotBlank(message = "Token is required")
   private String token;
+
   private Boolean isUsed = false;
+
   @NotNull(message = "User ID is required")
   private Long userId;
 

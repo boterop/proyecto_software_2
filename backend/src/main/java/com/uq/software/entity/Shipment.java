@@ -1,7 +1,5 @@
 package com.uq.software.entity;
 
-import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "shipments")
@@ -62,12 +61,20 @@ public class Shipment {
   @Column(nullable = false)
   private Long createdAt;
 
-  protected Shipment() {
-  }
+  protected Shipment() {}
 
-  public Shipment(Long senderId, String originAddress, String destinationAddress, String receiverName,
-      String receiverPhone, String receiverEmail, String packageDescription, Double lengthCm, Double widthCm,
-      Double heightCm, Double weightKg) {
+  public Shipment(
+      Long senderId,
+      String originAddress,
+      String destinationAddress,
+      String receiverName,
+      String receiverPhone,
+      String receiverEmail,
+      String packageDescription,
+      Double lengthCm,
+      Double widthCm,
+      Double heightCm,
+      Double weightKg) {
     this.trackingCode = generateTrackingCode();
     this.senderId = senderId;
     this.originAddress = originAddress;

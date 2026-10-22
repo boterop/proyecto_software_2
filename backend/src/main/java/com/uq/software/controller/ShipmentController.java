@@ -1,7 +1,11 @@
 package com.uq.software.controller;
 
+import com.uq.software.dto.ShipmentRequestDTO;
+import com.uq.software.dto.ShipmentResponseDTO;
+import com.uq.software.entity.Shipment;
+import com.uq.software.service.ShipmentService;
+import jakarta.validation.Valid;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.uq.software.dto.ShipmentRequestDTO;
-import com.uq.software.dto.ShipmentResponseDTO;
-import com.uq.software.entity.Shipment;
-import com.uq.software.service.ShipmentService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/shipments")
@@ -29,14 +26,16 @@ public class ShipmentController {
   }
 
   @PostMapping
-  public ResponseEntity<ShipmentResponseDTO> create(@Valid @RequestBody ShipmentRequestDTO request) {
+  public ResponseEntity<ShipmentResponseDTO> create(
+      @Valid @RequestBody ShipmentRequestDTO request) {
     Shipment created = shipmentService.create(toDomain(request));
     return new ResponseEntity<>(toDTO(created), HttpStatus.CREATED);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<ShipmentResponseDTO> get(@PathVariable Long id) {
-    return shipmentService.getById(id)
+    return shipmentService
+        .getById(id)
         .map(this::toDTO)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
@@ -44,7 +43,8 @@ public class ShipmentController {
 
   @GetMapping("/tracking/{trackingCode}")
   public ResponseEntity<ShipmentResponseDTO> getByTrackingCode(@PathVariable String trackingCode) {
-    return shipmentService.getByTrackingCode(trackingCode)
+    return shipmentService
+        .getByTrackingCode(trackingCode)
         .map(this::toDTO)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
@@ -52,7 +52,8 @@ public class ShipmentController {
 
   @GetMapping("/sender/{senderId}")
   public ResponseEntity<List<ShipmentResponseDTO>> getBySender(@PathVariable Long senderId) {
-    return ResponseEntity.ok(shipmentService.getBySenderId(senderId).stream().map(this::toDTO).toList());
+    return ResponseEntity.ok(
+        shipmentService.getBySenderId(senderId).stream().map(this::toDTO).toList());
   }
 
   private Shipment toDomain(ShipmentRequestDTO request) {

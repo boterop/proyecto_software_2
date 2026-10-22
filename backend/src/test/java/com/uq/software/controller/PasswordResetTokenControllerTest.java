@@ -1,5 +1,12 @@
 package com.uq.software.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.uq.software.entity.PasswordResetToken;
+import com.uq.software.entity.User;
+import com.uq.software.repository.PasswordResetTokenRepository;
+import com.uq.software.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,77 +15,69 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.uq.software.entity.PasswordResetToken;
-import com.uq.software.entity.User;
-import com.uq.software.repository.PasswordResetTokenRepository;
-import com.uq.software.repository.UserRepository;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class PasswordResetTokenControllerTest {
   private final String endpoint = "/password-recovery";
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private PasswordResetTokenRepository passwordResetTokenRepository;
+  @Autowired private PasswordResetTokenRepository passwordResetTokenRepository;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Test
   void testResetPasswordWithToken() throws Exception {
     User user = userRepository.save(new User("user", "user1@email.com", "password"));
 
-    PasswordResetToken resetToken = passwordResetTokenRepository.save(new PasswordResetToken(user.getId()));
+    PasswordResetToken resetToken =
+        passwordResetTokenRepository.save(new PasswordResetToken(user.getId()));
 
-    String body = """
+    String body =
+        """
         {
           "token": "%s",
           "newPassword": "updated_password"
         }
-        """.formatted(resetToken.getToken());
+        """
+            .formatted(resetToken.getToken());
 
-    mockMvc.perform(post(endpoint)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(body))
+    mockMvc
+        .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isOk());
 
     User updatedUser = userRepository.findById(user.getId()).orElse(null);
     assert updatedUser.getPassword().equals("updated_password");
 
-    PasswordResetToken updatedToken = passwordResetTokenRepository.findByToken(resetToken.getToken()).orElse(null);
+    PasswordResetToken updatedToken =
+        passwordResetTokenRepository.findByToken(resetToken.getToken()).orElse(null);
     assert updatedToken.getIsUsed();
 
-    mockMvc.perform(post(endpoint)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(body))
+    mockMvc
+        .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isBadRequest());
-
   }
 
   @Test
   void testGenerateToken() throws Exception {
     User user = userRepository.save(new User("user", "user2@email.com", "password"));
 
-    String body = """
+    String body =
+        """
         {
           "email": "%s"
         }
-        """.formatted(user.getEmail());
+        """
+            .formatted(user.getEmail());
 
-    mockMvc.perform(post(endpoint + "/reset")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(body))
+    mockMvc
+        .perform(post(endpoint + "/reset").contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isOk());
 
     User savedUser = userRepository.findByEmail(user.getEmail()).orElse(null);
-    PasswordResetToken resetToken = passwordResetTokenRepository.findByUserId(savedUser.getId()).getFirst();
+    PasswordResetToken resetToken =
+        passwordResetTokenRepository.findByUserId(savedUser.getId()).getFirst();
     assert resetToken != null;
     assert resetToken.getToken().length() > 0;
     assert resetToken.getIsUsed() == false;
