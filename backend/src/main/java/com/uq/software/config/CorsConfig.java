@@ -1,5 +1,10 @@
 package com.uq.software.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig {
-  @Value("${ALLOWED_ORIGINS}")
+  @Value("${ALLOWED_ORIGINS:}")
   private String allowedOrigins;
 
   @Bean
@@ -16,7 +21,9 @@ public class CorsConfig {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        String[] origins = ("http://localhost:5173," + allowedOrigins).split(",");
+        String[] origins = Stream.concat(
+            Stream.of("http://localhost:51738"),
+            Arrays.stream(allowedOrigins.split(","))).toArray(String[]::new);
 
         registry.addMapping("/**")
             .allowedOrigins(origins)
