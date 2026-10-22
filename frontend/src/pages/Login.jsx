@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Alert, Box, Button, Link, TextField } from "@mui/material";
 import AuthLayout from "../layouts/AuthLayout";
 import { api } from "@services/api.js";
+import { TestLocation } from "@components";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -114,6 +115,7 @@ const Login = () => {
           </Button>
         </div>
       </Box>
+      <TestLocation />
     </AuthLayout>
   );
 };

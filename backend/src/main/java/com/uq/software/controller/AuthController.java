@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * URLs reales (con context-path): POST /api/auth/register, POST
- * /api/auth/login, GET /api/auth/me
+ * URLs reales (con context-path): POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
  */
 @RestController
 @RequestMapping("/auth")

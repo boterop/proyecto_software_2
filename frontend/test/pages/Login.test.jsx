@@ -1,9 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "@pages/Login";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { TestLocation } from "@components";
 
 describe("Login Component", () => {
   let user;
@@ -44,10 +45,15 @@ describe("Login Component", () => {
     }
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   it("renders without crashing", () => {
     const { container } = render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/login"]}>
         <Routes>
+          <Route path="/" element={<TestLocation />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </MemoryRouter>,
@@ -57,8 +63,9 @@ describe("Login Component", () => {
 
   it("login correctly", async () => {
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={["/login"]}>
         <Routes>
+          <Route path="/" element={<TestLocation />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </MemoryRouter>,
@@ -66,13 +73,38 @@ describe("Login Component", () => {
 
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-
     const submitButton = document.getElementById("submit");
 
     await user.type(emailInput, testUser.email);
-    await user.type(passwordInput, testUser.password);
+    await user.type(passwordInput, "Password123!");
     await user.click(submitButton);
 
-    expect(await screen.findByText("Login successful.")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByTestId("location")).not.toHaveTextContent("/login");
+    });
+  });
+
+  it("shows error with invalid credentials", async () => {
+    render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <Routes>
+          <Route path="/" element={<TestLocation />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const submitButton = document.getElementById("submit");
+
+    await user.type(emailInput, testUser.email);
+    await user.type(passwordInput, "invalidPassword");
+    await user.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("location")).toHaveTextContent("/login");
+    });
+    expect(await screen.findByText("Error al iniciar sesión")).toBeDefined();
   });
 });

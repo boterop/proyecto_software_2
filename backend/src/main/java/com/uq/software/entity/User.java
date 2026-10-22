@@ -18,11 +18,8 @@ public class User {
   private String email;
 
   @Column(nullable = false)
-  private String password; // HU-01: guarda SIEMPRE el hash BCrypt, nunca texto plano
+  private String password;
 
-  // HU-01 (nuevo): rol para RBAC. El default en la columna permite que
-  // "ddl-auto=update"
-  // agregue la columna a una BD SQLite que ya tenga usuarios.
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
   private Role role = Role.CLIENTE_EMISOR;

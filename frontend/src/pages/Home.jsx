@@ -1,6 +1,7 @@
 import { Button, CircularProgress } from "@mui/material";
 import { useAuth } from "@hooks/useAuth";
 import { api } from "@services/api.js";
+import { TestLocation } from "@components";
 
 const roleLabel = (role) => {
   switch (role) {
@@ -16,7 +17,7 @@ const roleLabel = (role) => {
 };
 
 const Home = () => {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -53,6 +54,7 @@ const Home = () => {
           </Button>
         </div>
       </div>
+      <TestLocation />
     </div>
   );
 };
