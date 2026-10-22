@@ -43,6 +43,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
 
+        System.out.println(">>> CARGANDO SecurityConfig PRINCIPAL <<<");
+
         http.cors(Customizer.withDefaults())
 
 
@@ -75,6 +77,8 @@ public class SecurityConfig {
                                 "/password-recovery",
                                 "/password-recovery/reset"
                         ).permitAll()
+
+                        .requestMatchers("/test/**").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
