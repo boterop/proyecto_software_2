@@ -1,4 +1,5 @@
 package com.uq.software.controller;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,14 @@ public class PasswordResetTokenController {
   private final PasswordResetTokenRepository passwordResetTokenRepository;
   private final UserRepository userRepository;
   private final EmailService emailService;
+  private final PasswordEncoder passwordEncoder;
 
   public PasswordResetTokenController(PasswordResetTokenRepository passwordResetTokenRepository,
-      UserRepository userRepository, EmailService emailService) {
+      UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder) {
     this.passwordResetTokenRepository = passwordResetTokenRepository;
     this.userRepository = userRepository;
     this.emailService = emailService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @PostMapping
@@ -49,7 +52,9 @@ public class PasswordResetTokenController {
       return ResponseEntity.badRequest().build();
     }
 
-    user.updatePassword(request.getNewPassword());
+    user.updatePassword(
+            request.getNewPassword(),
+            passwordEncoder);
 
     userRepository.save(user);
     resetToken.markAsUsed();

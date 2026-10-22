@@ -1,6 +1,7 @@
 package com.uq.software.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "users")
@@ -61,8 +62,23 @@ public class User {
   }
 
 
-  public void updatePassword(String newPasswordHash) {
-    this.password = newPasswordHash;
+  public void updatePassword(
+          String newPassword,
+          PasswordEncoder passwordEncoder
+  ) {
+    if (newPassword == null || newPassword.isBlank()) {
+      throw new IllegalArgumentException(
+              "La nueva contraseña no puede estar vacía"
+      );
+    }
+
+    if (passwordEncoder == null) {
+      throw new IllegalArgumentException(
+              "PasswordEncoder no puede ser null"
+      );
+    }
+
+    this.password = passwordEncoder.encode(newPassword);
   }
 }
 
