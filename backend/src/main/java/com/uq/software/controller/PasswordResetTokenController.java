@@ -1,12 +1,6 @@
 package com.uq.software.controller;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.uq.software.controller.dto.EmailRequestDTO;
 import com.uq.software.controller.dto.PasswordRecoveryRequestDTO;
 import com.uq.software.entity.PasswordResetToken;
@@ -14,9 +8,13 @@ import com.uq.software.entity.User;
 import com.uq.software.repository.PasswordResetTokenRepository;
 import com.uq.software.repository.UserRepository;
 import com.uq.software.service.EmailService;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/password-recovery")
@@ -36,8 +34,10 @@ public class PasswordResetTokenController {
   }
 
   @PostMapping
-  public ResponseEntity<Void> updatePassword(@Valid @RequestBody PasswordRecoveryRequestDTO request) {
-    PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken()).orElse(null);
+  public ResponseEntity<Void> updatePassword(
+      @Valid @RequestBody PasswordRecoveryRequestDTO request) {
+    PasswordResetToken resetToken =
+        passwordResetTokenRepository.findByToken(request.getToken()).orElse(null);
 
     if (resetToken == null) {
       return ResponseEntity.notFound().build();
@@ -63,7 +63,8 @@ public class PasswordResetTokenController {
   }
 
   @PostMapping("/reset")
-  public ResponseEntity<Void> reset(@Valid @RequestBody EmailRequestDTO request, HttpServletRequest httpRequest) {
+  public ResponseEntity<Void> reset(
+      @Valid @RequestBody EmailRequestDTO request, HttpServletRequest httpRequest) {
     User user = userRepository.findByEmail(request.getEmail()).orElse(null);
     if (user == null) {
       return ResponseEntity.ok().build();
@@ -74,7 +75,9 @@ public class PasswordResetTokenController {
     String domain = httpRequest.getHeader("Origin");
     String page = "/reset-password/";
 
-    emailService.send(user.getEmail(), "Reset your password",
+    emailService.send(
+        user.getEmail(),
+        "Reset your password",
         "Click here to reset your password: " + domain + page + resetToken.getToken());
 
     return ResponseEntity.ok().build();

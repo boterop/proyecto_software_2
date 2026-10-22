@@ -1,5 +1,12 @@
 package com.uq.software.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.uq.software.entity.PasswordResetToken;
+import com.uq.software.entity.User;
+import com.uq.software.repository.PasswordResetTokenRepository;
+import com.uq.software.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,14 +32,11 @@ class PasswordResetTokenControllerTest {
 
   private final String endpoint = "/password-recovery";
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private PasswordResetTokenRepository passwordResetTokenRepository;
+  @Autowired private PasswordResetTokenRepository passwordResetTokenRepository;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;

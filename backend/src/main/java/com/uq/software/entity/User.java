@@ -16,6 +16,7 @@ public class User {
 
   @Column(unique = true, nullable = false)
   private String email;
+
   @Column(nullable = false)
   private String password; // HU-01: guarda SIEMPRE el hash BCrypt, nunca texto plano
 
@@ -25,8 +26,7 @@ public class User {
   @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
   private Role role = Role.CLIENTE_EMISOR;
 
-  protected User() {
-  }
+  protected User() {}
 
   // Constructor original: se mantiene para no romper el código ni los tests existentes.
   public User(String name, String email, String password) {
