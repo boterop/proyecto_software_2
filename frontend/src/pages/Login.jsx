@@ -56,6 +56,7 @@ const Login = () => {
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <TextField
           fullWidth
+          id="email"
           label="Correo electrónico"
           type="email"
           name="email"
@@ -70,6 +71,7 @@ const Login = () => {
 
         <TextField
           fullWidth
+          id="password"
           label="Contraseña"
           type="password"
           name="password"
@@ -102,6 +104,7 @@ const Login = () => {
         <div className="auth-form__actions">
           <Button
             fullWidth
+            id="submit"
             type="submit"
             variant="contained"
             size="large"

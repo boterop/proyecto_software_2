@@ -1,5 +1,6 @@
 import { Button, CircularProgress } from "@mui/material";
 import { useAuth } from "@hooks/useAuth";
+import { api } from "@services/api.js";
 
 const roleLabel = (role) => {
   switch (role) {
@@ -25,7 +26,13 @@ const Home = () => {
     );
   }
 
-  const logout = () => {};
+  const logout = async () => {
+    const response = await api("/auth/logout");
+
+    if (!response.ok) {
+      throw new Error("Error al cerrar sesión");
+    }
+  };
 
   return (
     <div className="home-shell">

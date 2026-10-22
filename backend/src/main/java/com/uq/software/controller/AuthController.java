@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * URLs reales (con context-path): POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
+ * URLs reales (con context-path): POST /api/auth/register, POST
+ * /api/auth/login, GET /api/auth/me
  */
 @RestController
 @RequestMapping("/auth")
@@ -61,7 +62,6 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).body(Map.of("token", token));
   }
 
-  /** Devuelve el usuario autenticado; útil para que el SPA restaure la sesión. */
   @GetMapping("/me")
   public ResponseEntity<UserResponse> me(Authentication authentication) {
     return userRepository
@@ -69,5 +69,12 @@ public class AuthController {
         .map(UserResponse::from)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+  }
+
+  @GetMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletResponse response) {
+    addTokenInCookie(response, null);
+
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 }
