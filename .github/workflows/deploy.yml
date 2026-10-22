@@ -32,6 +32,7 @@ jobs:
         uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6.15.0
         with:
           context: ./backend
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME }}_back:latest
 
@@ -60,6 +61,7 @@ jobs:
         with:
           context: ./frontend
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ vars.DOCKERHUB_USERNAME }}/${{ env.REPO_NAME }}_front:latest
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
