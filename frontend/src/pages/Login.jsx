@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import AuthLayout from "../components/AuthLayout";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { ApiError } from "../services/api";
 
 const Login = () => {

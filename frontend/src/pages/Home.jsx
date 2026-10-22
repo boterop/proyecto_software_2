@@ -1,6 +1,6 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Button, CircularProgress } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 const roleLabel = (role) => {
   switch (role) {
