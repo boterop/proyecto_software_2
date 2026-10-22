@@ -1,17 +1,17 @@
 name: Deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [closed]
+  pull_request:
+    types: [closed, review_requested, ready_for_review, synchronize, opened]
 
 permissions: # added using https://github.com/step-security/secure-repo
   contents: read
 
 jobs:
   publish-back-image:
-    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     defaults:
       run:
