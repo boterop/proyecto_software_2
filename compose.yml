@@ -1,13 +1,22 @@
 services:
   backend:
-    image: uqdelivery-back:test
+    build:
+      context: ./backend
+      target: production
+    container_name: software-backend
     environment:
       ALLOWED_ORIGINS: http://localhost:3000
     ports:
       - "8080:8080"
-
+    volumes:
+      - ./data:/data
   frontend:
-    image: uqdelivery-front:test
+    build:
+      context: ./frontend
+      target: production
+      args:
+        VITE_API_URL: http://localhost:8080/api
+    container_name: software-frontend
     ports:
       - "5173:80"
     depends_on:
