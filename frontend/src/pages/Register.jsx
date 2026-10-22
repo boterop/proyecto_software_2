@@ -7,7 +7,7 @@ import {
   Link,
   TextField,
 } from "@mui/material";
-import AuthLayout from "../components/AuthLayout";
+import AuthLayout from "../layouts/AuthLayout";
 import { useAuth } from "../context/useAuth";
 import { ApiError } from "../services/api";
 import {
