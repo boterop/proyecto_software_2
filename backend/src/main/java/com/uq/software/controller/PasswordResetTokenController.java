@@ -1,5 +1,4 @@
 package com.uq.software.controller;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.uq.software.controller.dto.EmailRequestDTO;
 import com.uq.software.controller.dto.PasswordRecoveryRequestDTO;
@@ -11,6 +10,7 @@ import com.uq.software.service.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +25,11 @@ public class PasswordResetTokenController {
   private final EmailService emailService;
   private final PasswordEncoder passwordEncoder;
 
-  public PasswordResetTokenController(PasswordResetTokenRepository passwordResetTokenRepository,
-      UserRepository userRepository, EmailService emailService, PasswordEncoder passwordEncoder) {
+  public PasswordResetTokenController(
+      PasswordResetTokenRepository passwordResetTokenRepository,
+      UserRepository userRepository,
+      EmailService emailService,
+      PasswordEncoder passwordEncoder) {
     this.passwordResetTokenRepository = passwordResetTokenRepository;
     this.userRepository = userRepository;
     this.emailService = emailService;
@@ -52,9 +55,7 @@ public class PasswordResetTokenController {
       return ResponseEntity.badRequest().build();
     }
 
-    user.updatePassword(
-            request.getNewPassword(),
-            passwordEncoder);
+    user.updatePassword(request.getNewPassword(), passwordEncoder);
 
     userRepository.save(user);
     resetToken.markAsUsed();

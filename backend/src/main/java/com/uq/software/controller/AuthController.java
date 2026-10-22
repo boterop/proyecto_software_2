@@ -16,35 +16,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** URLs reales (con context-path): POST /api/auth/register, POST /api/auth/login, GET /api/auth/me */
+/**
+ * URLs reales (con context-path): POST /api/auth/register, POST /api/auth/login, GET /api/auth/me
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authService;
-    private final UserRepository userRepository;
+  private final AuthService authService;
+  private final UserRepository userRepository;
 
-    public AuthController(AuthService authService, UserRepository userRepository) {
-        this.authService = authService;
-        this.userRepository = userRepository;
-    }
+  public AuthController(AuthService authService, UserRepository userRepository) {
+    this.authService = authService;
+    this.userRepository = userRepository;
+  }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
-    }
+  @PostMapping("/register")
+  public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+  }
 
-    @PostMapping("/login")
-    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
-    }
+  @PostMapping("/login")
+  public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+    return authService.login(request);
+  }
 
-    /** Devuelve el usuario autenticado; útil para que el SPA restaure la sesión. */
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(Authentication authentication) {
-        return userRepository.findByEmail(authentication.getName())
-                .map(UserResponse::from)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
-    }
+  /** Devuelve el usuario autenticado; útil para que el SPA restaure la sesión. */
+  @GetMapping("/me")
+  public ResponseEntity<UserResponse> me(Authentication authentication) {
+    return userRepository
+        .findByEmail(authentication.getName())
+        .map(UserResponse::from)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+  }
 }

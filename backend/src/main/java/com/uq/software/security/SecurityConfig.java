@@ -1,4 +1,3 @@
-
 package com.uq.software.security;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -22,79 +21,64 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @ConditionalOnProperty(
-        name = "app.test.security.permit-all",
-        havingValue = "false",
-        matchIfMissing = true
-)
+    name = "app.test.security.permit-all",
+    havingValue = "false",
+    matchIfMissing = true)
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtFilter;
+  private final JwtAuthenticationFilter jwtFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
-        this.jwtFilter = jwtFilter;
-    }
+  public SecurityConfig(JwtAuthenticationFilter jwtFilter) {
+    this.jwtFilter = jwtFilter;
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
-            throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        System.out.println(">>> CARGANDO SecurityConfig PRINCIPAL <<<");
+    System.out.println(">>> CARGANDO SecurityConfig PRINCIPAL <<<");
 
-        http.cors(Customizer.withDefaults())
+    http.cors(Customizer.withDefaults())
 
+        // API stateless autenticada mediante JWT.
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // API stateless autenticada mediante JWT.
-                .csrf(AbstractHttpConfigurer::disable)
+        // Cabeceras de seguridad HTTP.
+        .headers(
+            h ->
+                h.frameOptions(f -> f.deny())
+                    .contentSecurityPolicy(
+                        csp -> csp.policyDirectives("default-src 'none'; frame-ancestors 'none'")))
 
-                .sessionManagement(s ->
-                        s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // Reglas de acceso a las rutas.
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers(HttpMethod.OPTIONS, "/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login")
+                    .permitAll()
+                    .requestMatchers(
+                        HttpMethod.POST, "/password-recovery", "/password-recovery/reset")
+                    .permitAll()
+                    .requestMatchers("/test/**")
+                    .permitAll()
+                    .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .authenticated())
 
-                // Cabeceras de seguridad HTTP.
-                .headers(h -> h
-                        .frameOptions(f -> f.deny())
-                        .contentSecurityPolicy(csp ->
-                                csp.policyDirectives(
-                                        "default-src 'none'; frame-ancestors 'none'")))
+        // Respuesta para solicitudes no autenticadas.
+        .exceptionHandling(
+            e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
 
-                // Reglas de acceso a las rutas.
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+        // Integración del filtro JWT.
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/auth/register",
-                                "/auth/login"
-                        ).permitAll()
-
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/password-recovery",
-                                "/password-recovery/reset"
-                        ).permitAll()
-
-                        .requestMatchers("/test/**").permitAll()
-
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-
-                // Respuesta para solicitudes no autenticadas.
-                .exceptionHandling(e ->
-                        e.authenticationEntryPoint(
-                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-
-                // Integración del filtro JWT.
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
-
-        return http.build();
-    }
+    return http.build();
+  }
 }

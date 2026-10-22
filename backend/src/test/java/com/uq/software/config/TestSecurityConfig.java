@@ -10,26 +10,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@ConditionalOnProperty(
-        name = "app.test.security.permit-all",
-        havingValue = "true"
-)
+@ConditionalOnProperty(name = "app.test.security.permit-all", havingValue = "true")
 class TestSecurityConfig {
 
-    @Bean
-    SecurityFilterChain permitAllForTests(HttpSecurity http)
-            throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
-                        auth.anyRequest().permitAll()
-                );
+  @Bean
+  SecurityFilterChain permitAllForTests(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12);
+  }
 }
