@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CreateShipment from "./pages/CreateShipment";
 import Profile from "./pages/Profile";
+import AdminUsers from "./pages/AdminUsers";
 
 const App = () => (
   <BrowserRouter>
@@ -17,6 +18,7 @@ const App = () => (
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/shipments/new" element={<CreateShipment />} />
       <Route path="/profile/:userId" element={<Profile />} />
+      <Route path="/admin/users" element={<AdminUsers />} />
     </Routes>
   </BrowserRouter>
 );
