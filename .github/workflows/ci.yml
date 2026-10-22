@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [closed, review_requested, ready_for_review, synchronize, opened]
+
+jobs:
+  frontend:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+          run_install: false
+
+      - name: Set up node 26
+        uses: actions/setup-node@v6
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Check code style
+        run: pnpm run lint
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Run Tests
+        run: pnpm test --run --coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: frontend/coverage/lcov.info
+          flag-name: frontend
+          parallel: true
+  backend:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Verify
+        run: ./mvnw verify -DskipTests
+
+      - name: Run formatter
+        run: ./mvnw spotless:check
+
+      - name: Run Tests
+        run: ./mvnw test
+
+      - name: Build Package
+        run: ./mvnw package
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: backend/target/site/jacoco/jacoco.xml
+          format: jacoco
+          flag-name: backend
+          parallel: true
+  coverage:
+    needs:
+      - backend
+      - frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
