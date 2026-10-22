@@ -31,13 +31,29 @@ const RequireAuth = () => {
   return <Outlet />;
 };
 
+const RequireUnAuth = () => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!isAuthenticated) {
+    return <Outlet />;
+  }
+
+  return <Navigate to="/" replace />;
+};
+
 const App = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route element={<RequireUnAuth />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+      </Route>
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Home />} />
         <Route path="/shipments/new" element={<CreateShipment />} />
