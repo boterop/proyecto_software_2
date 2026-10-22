@@ -1,0 +1,14 @@
+services:
+  backend:
+    image: uqdelivery-back:test
+    environment:
+      ALLOWED_ORIGINS: http://localhost:3000
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: uqdelivery-front:test
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
