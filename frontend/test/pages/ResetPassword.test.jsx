@@ -83,7 +83,9 @@ describe("ResetPassword Component", () => {
     await user.click(submitButton);
 
     expect(
-      await screen.findByText("Tu contraseña se ha restablecido correctamente."),
+      await screen.findByText(
+        "Tu contraseña ha sido restablecida exitosamente.",
+      ),
     ).toBeDefined();
 
     const userResponse = await fetch(`${API_URL}/test/users/${testUser.id}`, {
@@ -117,7 +119,9 @@ describe("ResetPassword Component", () => {
     await user.click(submitButton);
 
     expect(
-      await screen.findByText("El enlace de restablecimiento no es válido o ha expirado."),
+      await screen.findByText(
+        "El enlace de restablecimiento no es válido o ha expirado.",
+      ),
     ).toBeDefined();
   });
 
@@ -139,6 +143,8 @@ describe("ResetPassword Component", () => {
     await user.type(confirmPasswordInput, "nomatch");
     await user.click(submitButton);
 
-    expect(await screen.findByText("Las contraseñas no coinciden.")).toBeDefined();
+    expect(
+      await screen.findByText("Las contraseñas no coinciden."),
+    ).toBeDefined();
   });
 });
