@@ -34,8 +34,7 @@ public class IncidentReport {
   @Column(nullable = false)
   private Long timestamp;
 
-  protected IncidentReport() {
-  }
+  protected IncidentReport() {}
 
   public IncidentReport(
       Long deliveryId,

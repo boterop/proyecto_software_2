@@ -98,6 +98,8 @@ const CreateIncidentReport = () => {
 
       setMessage("Incident reported successfully.");
 
+      setLocation(null);
+
       setForm({
         deliveryId: "",
         userId: "",
