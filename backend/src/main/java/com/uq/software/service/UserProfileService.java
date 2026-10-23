@@ -43,6 +43,11 @@ public class UserProfileService {
             });
   }
 
+  /** true si el usuario {userId} es el dueño del correo indicado. */
+  public boolean isOwner(Long userId, String email) {
+    return userRepository.findById(userId).map(u -> u.getEmail().equals(email)).orElse(false);
+  }
+
   private UserProfileResponse toResponse(User user, UserProfile profile) {
     return new UserProfileResponse(
         user.getId(),
