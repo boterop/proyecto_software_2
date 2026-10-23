@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { api } from "@services/api.js";
 
 // TODO(HU-01): replace with the authenticated user's id when login is integrated.
 const TEMP_SENDER_ID = 1;
@@ -97,7 +98,7 @@ const CreateShipment = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/shipments`, {
+      const response = await api(`/shipments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -120,7 +121,9 @@ const CreateShipment = () => {
       setForm(EMPTY);
       setErrors({});
     } catch {
-      setError("Could not create the shipment. Please review the data and try again.");
+      setError(
+        "Could not create the shipment. Please review the data and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -151,7 +154,9 @@ const CreateShipment = () => {
           {field("destinationAddress", "Destination address")}
           {field("receiverName", "Receiver name")}
           {field("receiverPhone", "Receiver phone")}
-          {field("receiverEmail", "Receiver email (optional)", { type: "email" })}
+          {field("receiverEmail", "Receiver email (optional)", {
+            type: "email",
+          })}
           {field("packageDescription", "Package description", {
             multiline: true,
             minRows: 2,

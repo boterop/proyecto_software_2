@@ -32,6 +32,11 @@ public class ShipmentController {
     return new ResponseEntity<>(toDTO(created), HttpStatus.CREATED);
   }
 
+  @GetMapping
+  public ResponseEntity<List<ShipmentResponseDTO>> getAll() {
+    return ResponseEntity.ok(shipmentService.findAll().stream().map(this::toDTO).toList());
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<ShipmentResponseDTO> get(@PathVariable Long id) {
     return shipmentService
