@@ -44,5 +44,6 @@ export function useAuth() {
     user,
     loading,
     isAuthenticated: user !== null,
+    isAdmin: user?.role === "ADMIN",
   };
 }

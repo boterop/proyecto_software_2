@@ -10,25 +10,30 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
+import { useAuth } from "@hooks/useAuth";
+import { api } from "@services/api.js";
 
 const PHONE_REGEX = /^[0-9+ ()-]{7,20}$/;
 
 const validate = ({ phone, address, city }) => {
     const errors = {};
     if (phone.trim() && !PHONE_REGEX.test(phone.trim())) {
-        errors.phone = "Phone is invalid";
+        errors.phone = "El teléfono no es válido";
     }
     if (address.length > 200) {
-        errors.address = "Address is too long";
+        errors.address = "La dirección es demasiado larga";
     }
     if (city.length > 100) {
-        errors.city = "City is too long";
+        errors.city = "La ciudad es demasiado larga";
     }
     return errors;
 };
 
 const Profile = () => {
-    const { userId } = useParams();
+    // /profile abre el perfil propio; /profile/:userId lo usa el administrador.
+    const { userId: routeUserId } = useParams();
+    const { user: authUser, loading: authLoading } = useAuth();
+    const userId = routeUserId ?? authUser?.id;
 
     const [user, setUser] = useState(null);
     const [form, setForm] = useState({ phone: "", address: "", city: "" });
@@ -39,17 +44,22 @@ const Profile = () => {
     const [success, setSuccess] = useState("");
 
     useEffect(() => {
+        if (!userId) return;
+
         let cancelled = false;
 
         const loadProfile = async () => {
             try {
-                const response = await fetch(`${API_URL}/user-profiles/${userId}`);
+                const response = await api(`/user-profiles/${userId}`);
 
+                if (response.status === 401 || response.status === 403) {
+                    throw new Error("No tienes permiso para ver este perfil.");
+                }
                 if (response.status === 404) {
-                    throw new Error("User not found.");
+                    throw new Error("Usuario no encontrado.");
                 }
                 if (!response.ok) {
-                    throw new Error("Could not load the profile.");
+                    throw new Error("No se pudo cargar el perfil.");
                 }
 
                 const data = await response.json();
@@ -64,8 +74,8 @@ const Profile = () => {
             } catch (err) {
                 if (!cancelled) {
                     setError(
-                        err.message === "Failed to fetch"
-                            ? "Could not reach the server. Please try again."
+                        err instanceof TypeError
+                            ? "No se pudo conectar con el servidor. Inténtalo de nuevo."
                             : err.message,
                     );
                 }
@@ -99,12 +109,9 @@ const Profile = () => {
         setSuccess("");
 
         try {
-            const response = await fetch(`${API_URL}/user-profiles/${userId}`, {
+            const response = await api(`/user-profiles/${userId}`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                // Empty fields are sent as null so the backend does not validate them.
+                // Los campos vacíos se envían como null para que el backend no los valide.
                 body: JSON.stringify({
                     phone: form.phone.trim() || null,
                     address: form.address.trim() || null,
@@ -116,13 +123,15 @@ const Profile = () => {
                 throw new Error("Request failed");
             }
 
-            setSuccess("Profile updated successfully.");
+            setSuccess("Perfil actualizado correctamente.");
         } catch {
-            setError("Something went wrong. Please try again.");
+            setError("Algo salió mal. Inténtalo de nuevo.");
         } finally {
             setSaving(false);
         }
     };
+
+    const showSpinner = authLoading || (loading && !error);
 
     return (
         <Container maxWidth="sm">
@@ -135,41 +144,43 @@ const Profile = () => {
             >
                 <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        My profile
+                        Mi perfil
                     </Typography>
 
-                    {loading && (
+                    {showSpinner && (
                         <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
                             <CircularProgress />
                         </Box>
                     )}
 
-                    {!loading && !user && error && <Alert severity="error">{error}</Alert>}
+                    {!showSpinner && !user && error && (
+                        <Alert severity="error">{error}</Alert>
+                    )}
 
-                    {!loading && user && (
+                    {!showSpinner && user && (
                         <>
                             <Typography color="text.secondary" sx={{ mb: 3 }}>
-                                Update your contact information.
+                                Actualiza tu información de contacto.
                             </Typography>
 
                             <Box component="form" onSubmit={handleSubmit} noValidate>
                                 <TextField
                                     fullWidth
-                                    label="Name"
+                                    label="Nombre"
                                     value={user.name}
                                     margin="normal"
                                     disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    label="Email"
+                                    label="Correo electrónico"
                                     value={user.email}
                                     margin="normal"
                                     disabled
                                 />
                                 <TextField
                                     fullWidth
-                                    label="Phone"
+                                    label="Teléfono"
                                     value={form.phone}
                                     onChange={handleChange("phone")}
                                     error={Boolean(fieldErrors.phone)}
@@ -179,7 +190,7 @@ const Profile = () => {
                                 />
                                 <TextField
                                     fullWidth
-                                    label="Address"
+                                    label="Dirección"
                                     value={form.address}
                                     onChange={handleChange("address")}
                                     error={Boolean(fieldErrors.address)}
@@ -189,7 +200,7 @@ const Profile = () => {
                                 />
                                 <TextField
                                     fullWidth
-                                    label="City"
+                                    label="Ciudad"
                                     value={form.city}
                                     onChange={handleChange("city")}
                                     error={Boolean(fieldErrors.city)}
@@ -205,7 +216,7 @@ const Profile = () => {
                                     disabled={saving}
                                     sx={{ mt: 2 }}
                                 >
-                                    {saving ? "Saving..." : "Save changes"}
+                                    {saving ? "Guardando..." : "Guardar cambios"}
                                 </Button>
                             </Box>
 
