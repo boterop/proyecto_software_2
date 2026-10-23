@@ -60,6 +60,13 @@ public class User {
     return role;
   }
 
+  public void changeRole(Role role) {
+    if (role == null) {
+      throw new IllegalArgumentException("El rol no puede ser null");
+    }
+    this.role = role;
+  }
+
   public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
     if (newPassword == null || newPassword.isBlank()) {
       throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
