@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /** HU-02. URLs reales: GET/PUT /api/user-profiles/{userId} */
 @RestController
@@ -22,7 +23,7 @@ public class UserProfileController {
   public UserProfileController(UserProfileService userProfileService) {
     this.userProfileService = userProfileService;
   }
-
+  @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @GetMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> get(@PathVariable Long userId) {
     return userProfileService
@@ -30,7 +31,7 @@ public class UserProfileController {
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
-
+  @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @PutMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> save(
       @PathVariable Long userId, @Valid @RequestBody UserProfileRequest request) {
