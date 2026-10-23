@@ -66,6 +66,13 @@ const Home = () => {
           </Button>
           <Button
             component={RouterLink}
+            to="/shipments"
+            variant="contained"
+          >
+            Historial de envíos
+          </Button>
+          <Button
+            component={RouterLink}
             to="/incident-reports/new"
             variant="contained"
           >

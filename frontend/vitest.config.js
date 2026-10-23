@@ -13,6 +13,9 @@ export default mergeConfig(
       coverage: {
         provider: "v8",
         reporter: ["text", "lcov"],
+        thresholds: {
+          lines: 70,
+        },
       },
       globals: true,
       globalSetup: "./test/globalSetup.js",

@@ -17,6 +17,7 @@ import CreateShipment from "./pages/CreateShipment";
 import CreateIncidentReport from "./pages/CreateIncidentReport";
 import Profile from "./pages/Profile";
 import AdminUsers from "./pages/AdminUsers";
+import ShipmentsHistory from "./pages/ShipmentsHistory";
 import { useAuth } from "./hooks/useAuth";
 
 const RequireAuth = () => {
@@ -73,6 +74,7 @@ const App = () => (
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Home />} />
         <Route path="/shipments/new" element={<CreateShipment />} />
+        <Route path="/shipments" element={<ShipmentsHistory />} />
         <Route path="/profile" element={<Profile />} />
         <Route
           path="/incident-reports/new"
