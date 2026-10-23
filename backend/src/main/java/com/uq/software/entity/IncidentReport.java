@@ -34,7 +34,8 @@ public class IncidentReport {
   @Column(nullable = false)
   private Long timestamp;
 
-  protected IncidentReport() {}
+  protected IncidentReport() {
+  }
 
   public IncidentReport(
       Long deliveryId,
@@ -65,15 +66,8 @@ public class IncidentReport {
       String status,
       String evidence,
       Long timestamp) {
+    this(deliveryId, userId, incidentType, description, location, status, evidence, timestamp);
     this.id = id;
-    this.deliveryId = deliveryId;
-    this.userId = userId;
-    this.incidentType = incidentType;
-    this.description = description;
-    this.location = location;
-    this.status = status;
-    this.evidence = evidence;
-    this.timestamp = timestamp;
   }
 
   public Long getId() {

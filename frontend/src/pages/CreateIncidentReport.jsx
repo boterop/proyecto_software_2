@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import LocationPicker from "../components/LocationPicker";
+import { api } from "@services/api.js";
 
 const CreateIncidentReport = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -36,23 +37,24 @@ const CreateIncidentReport = () => {
     const loadData = async () => {
       try {
         const [deliveriesResponse, usersResponse] = await Promise.all([
-          fetch(`${API_URL}/shipments`),
-          fetch(`${API_URL}/users`),
+          api(`/shipments`),
+          api(`/users`),
         ]);
 
-        if (!deliveriesResponse.ok) {
-          throw new Error("Failed to load deliveries.");
+        if (!deliveriesResponse.ok || !usersResponse.ok) {
+          throw new Error("Failed to load data");
         }
 
-        setDeliveries(await deliveriesResponse.json());
-
-        if (!usersResponse.ok) {
-          throw new Error("Failed to load users.");
-        }
-
-        setUsers(await usersResponse.json());
-      } catch (error) {
-        setMessage(error.message);
+        const deliveries = await deliveriesResponse.json();
+        setDeliveries(
+          deliveries.filter(
+            (d) => d.status != "CANCELLED" && d.status != "DELIVERED",
+          ),
+        );
+        const users = await usersResponse.json();
+        setUsers(users.filter((u) => u.role === "REPARTIDOR"));
+      } catch {
+        setMessage("Failed to load deliveries or users.");
       }
     };
 
@@ -75,18 +77,19 @@ const CreateIncidentReport = () => {
     setMessage("");
 
     try {
-      const response = await fetch(`${API_URL}/incident-reports`, {
+      const body = {
+        ...form,
+        location: `${location.latitude},${location.longitude}`,
+        deliveryId: Number(form.deliveryId),
+        userId: Number(form.userId),
+        timestamp: Date.now(),
+      };
+      const response = await api(`/incident-reports`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...form,
-          location: `${location.latitude},${location.longitude}`,
-          deliveryId: Number(form.deliveryId),
-          userId: Number(form.userId),
-          timestamp: Date.now(),
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -122,10 +125,35 @@ const CreateIncidentReport = () => {
     const reader = new FileReader();
 
     reader.onload = () => {
-      setForm((current) => ({
-        ...current,
-        evidence: reader.result,
-      }));
+      const img = new Image();
+
+      img.onload = () => {
+        const size = Math.min(img.width, img.height);
+
+        const canvas = document.createElement("canvas");
+
+        const maxSize = 800;
+        const outputSize = Math.min(size, maxSize);
+
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+
+        const ctx = canvas.getContext("2d");
+
+        const x = (img.width - size) / 2;
+        const y = (img.height - size) / 2;
+
+        ctx.drawImage(img, x, y, size, size, 0, 0, outputSize, outputSize);
+
+        const base64 = canvas.toDataURL("image/jpeg", 0.5);
+
+        setForm((current) => ({
+          ...current,
+          evidence: base64,
+        }));
+      };
+
+      img.src = reader.result;
     };
 
     reader.readAsDataURL(file);
@@ -190,7 +218,7 @@ const CreateIncidentReport = () => {
                 });
               }}
               getOptionLabel={(delivery) =>
-                `${delivery.trackingCode} (${delivery.packageDescription.substring(0, 20)})`
+                `${delivery.trackingCode} (${delivery.packageDescription.substring(0, 25)}${delivery.packageDescription.length > 25 ? "..." : ""})`
               }
               renderInput={(params) => (
                 <TextField
@@ -264,7 +292,15 @@ const CreateIncidentReport = () => {
               </Typography>
             )}
 
-            <Box sx={{ mt: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mt: 2,
+                width: "100%",
+              }}
+            >
               <Button
                 component="label"
                 variant="outlined"
@@ -281,16 +317,13 @@ const CreateIncidentReport = () => {
               </Button>
 
               {form.evidence && (
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 1, fontWeight: "bold" }}
-                >
-                  Evidence image selected
-                </Typography>
+                <img
+                  src={form.evidence}
+                  alt="Evidence image"
+                  style={{ maxWidth: "40%" }}
+                />
               )}
             </Box>
-
             <Button
               fullWidth
               type="submit"
