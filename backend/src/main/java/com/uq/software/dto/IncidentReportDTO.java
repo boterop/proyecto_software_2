@@ -21,14 +21,12 @@ public class IncidentReportDTO {
   @NotBlank(message = "Location is required")
   private String location;
 
-  @NotBlank(message = "Status is required")
-  private String status;
+  private String status = "OPEN";
 
   @NotBlank(message = "Evidence is required")
   private String evidence;
 
-  @NotNull(message = "Timestamp is required")
-  private Long timestamp;
+  private Long timestamp = System.currentTimeMillis();
 
   public IncidentReportDTO(
       Long deliveryId,

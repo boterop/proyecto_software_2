@@ -25,7 +25,7 @@ const ResetPassword = () => {
     setMessage("");
 
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setMessage("Las contraseñas no coinciden.");
       return;
     }
 
@@ -47,13 +47,13 @@ const ResetPassword = () => {
         throw new Error("Request failed");
       }
 
-      setMessage("Your password has been reset successfully.");
+      setMessage("Tu contraseña ha sido restablecida exitosamente.");
       setPassword("");
       setConfirmPassword("");
       setRedirecting(true);
       setTimeout(() => (window.location.href = "/login"), 3000);
     } catch {
-      setMessage("The reset link is invalid or has expired.");
+      setMessage("El enlace de restablecimiento no es válido o ha expirado.");
     } finally {
       setLoading(false);
     }
@@ -70,18 +70,18 @@ const ResetPassword = () => {
       >
         <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Reset password
+            Restablecer contraseña
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Enter your new password below.
+            Ingresa tu nueva contraseña a continuación.
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
               id="newPassword"
-              label="New password"
+              label="Nueva contraseña"
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
@@ -93,7 +93,7 @@ const ResetPassword = () => {
             <TextField
               fullWidth
               id="confirmPassword"
-              label="Confirm password"
+              label="Confirmar contraseña"
               type="password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
@@ -109,7 +109,7 @@ const ResetPassword = () => {
               disabled={loading}
               sx={{ mt: 2 }}
             >
-              {loading ? "Resetting..." : "Reset password"}
+              {loading ? "Restableciendo..." : "Restablecer contraseña"}
             </Button>
           </Box>
 

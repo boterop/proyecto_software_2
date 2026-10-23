@@ -7,7 +7,7 @@ import java.util.UUID;
 @Table(name = "password_reset_tokens")
 public class PasswordResetToken {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(unique = true, nullable = false)

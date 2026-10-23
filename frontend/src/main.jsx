@@ -6,11 +6,12 @@ import "./config/globals";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme/theme.js";
 import CssBaseline from "@mui/material/CssBaseline";
+import "leaflet/dist/leaflet.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+        <App />
       <CssBaseline />
     </ThemeProvider>
   </StrictMode>,

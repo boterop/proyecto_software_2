@@ -20,11 +20,11 @@ describe("ForgotPassword Component", () => {
     render(<ForgotPassword />);
 
     const emailInput = screen.getByRole("textbox", {
-      name: "Email",
+      name: "Correo electrónico",
     });
 
     const submitButton = screen.getByRole("button", {
-      name: "Send reset link",
+      name: "Enviar enlace de restablecimiento",
     });
 
     await user.type(emailInput, "test@example.com");
@@ -32,7 +32,7 @@ describe("ForgotPassword Component", () => {
 
     expect(
       await screen.findByText(
-        "If an account exists with that email, you will receive a password reset link.",
+        "Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.",
       ),
     ).toBeDefined();
   });

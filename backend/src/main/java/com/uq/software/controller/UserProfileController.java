@@ -5,6 +5,7 @@ import com.uq.software.dto.UserProfileResponse;
 import com.uq.software.service.UserProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +24,7 @@ public class UserProfileController {
     this.userProfileService = userProfileService;
   }
 
+  @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @GetMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> get(@PathVariable Long userId) {
     return userProfileService
@@ -31,6 +33,7 @@ public class UserProfileController {
         .orElse(ResponseEntity.notFound().build());
   }
 
+  @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @PutMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> save(
       @PathVariable Long userId, @Valid @RequestBody UserProfileRequest request) {

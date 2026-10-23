@@ -10,6 +10,7 @@ import com.uq.software.service.EmailService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +23,17 @@ public class PasswordResetTokenController {
   private final PasswordResetTokenRepository passwordResetTokenRepository;
   private final UserRepository userRepository;
   private final EmailService emailService;
+  private final PasswordEncoder passwordEncoder;
 
   public PasswordResetTokenController(
       PasswordResetTokenRepository passwordResetTokenRepository,
       UserRepository userRepository,
-      EmailService emailService) {
+      EmailService emailService,
+      PasswordEncoder passwordEncoder) {
     this.passwordResetTokenRepository = passwordResetTokenRepository;
     this.userRepository = userRepository;
     this.emailService = emailService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @PostMapping
@@ -51,7 +55,7 @@ public class PasswordResetTokenController {
       return ResponseEntity.badRequest().build();
     }
 
-    user.updatePassword(request.getNewPassword());
+    user.updatePassword(request.getNewPassword(), passwordEncoder);
 
     userRepository.save(user);
     resetToken.markAsUsed();

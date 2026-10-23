@@ -19,6 +19,10 @@ public class ShipmentService {
     return shipmentRepository.save(shipment);
   }
 
+  public List<Shipment> findAll() {
+    return shipmentRepository.findAll();
+  }
+
   public Optional<Shipment> getById(Long id) {
     return shipmentRepository.findById(id);
   }
