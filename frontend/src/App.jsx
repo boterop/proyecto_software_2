@@ -15,6 +15,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import CreateShipment from "./pages/CreateShipment";
 import Profile from "./pages/Profile";
+import AdminUsers from "./pages/AdminUsers";
 import { useAuth } from "./hooks/useAuth";
 
 const RequireAuth = () => {
@@ -45,6 +46,20 @@ const RequireUnAuth = () => {
   return <Navigate to="/" replace />;
 };
 
+const RequireAdmin = () => {
+    const { user, loading } = useAuth();
+
+    if (loading) {
+        return null;
+    }
+
+    if (user?.role !== "ADMIN") {
+        return <Navigate to="/" replace />;
+    }
+
+    return <Outlet />;
+};
+
 const App = () => (
   <BrowserRouter>
     <Routes>
@@ -57,7 +72,11 @@ const App = () => (
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Home />} />
         <Route path="/shipments/new" element={<CreateShipment />} />
-        <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route element={<RequireAdmin />}>
+              <Route path="/profile/:userId" element={<Profile />} />
+              <Route path="/admin/users" element={<AdminUsers />} />
+          </Route>
       </Route>
     </Routes>
   </BrowserRouter>
