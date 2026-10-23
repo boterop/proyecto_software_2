@@ -42,7 +42,7 @@ const CreateIncidentReport = () => {
         ]);
 
         if (!deliveriesResponse.ok || !usersResponse.ok) {
-          throw new Error("Failed to load data");
+          throw new Error("Error al cargar los datos");
         }
 
         const deliveries = await deliveriesResponse.json();
@@ -54,7 +54,7 @@ const CreateIncidentReport = () => {
         const users = await usersResponse.json();
         setUsers(users.filter((u) => u.role === "REPARTIDOR"));
       } catch {
-        setMessage("Failed to load deliveries or users.");
+        setMessage("Error al cargar los envíos o usuarios.");
       }
     };
 
@@ -93,10 +93,10 @@ const CreateIncidentReport = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create incident report");
+        throw new Error("Error al crear el reporte de incidente");
       }
 
-      setMessage("Incident reported successfully.");
+      setMessage("Incidente reportado exitosamente.");
 
       setLocation(null);
 
@@ -110,7 +110,7 @@ const CreateIncidentReport = () => {
         evidence: "",
       });
     } catch {
-      setMessage("Something went wrong. Please try again.");
+      setMessage("Algo salió mal. Por favor inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ const CreateIncidentReport = () => {
     const file = event.target.files?.[0];
 
     if (!file) {
-      setMessage("Please select an evidence image.");
+      setMessage("Por favor selecciona una imagen de evidencia.");
       return;
     }
 
@@ -182,17 +182,17 @@ const CreateIncidentReport = () => {
       >
         <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Report an incident
+            Reportar un incidente
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Provide the details of the incident.
+            Proporciona los detalles del incidente.
           </Typography>
 
           {message && (
             <Alert
               severity={
-                message === "Incident reported successfully."
+                message === "Incidente reportado exitosamente."
                   ? "success"
                   : "error"
               }
@@ -226,7 +226,7 @@ const CreateIncidentReport = () => {
                 <TextField
                   {...params}
                   required
-                  label="Delivery"
+                  label="Envío"
                   margin="normal"
                 />
               )}
@@ -247,7 +247,7 @@ const CreateIncidentReport = () => {
               }}
               getOptionLabel={(user) => `${user.name} - ${user.email}`}
               renderInput={(params) => (
-                <TextField {...params} required label="User" margin="normal" />
+                <TextField {...params} required label="Usuario" margin="normal" />
               )}
             />
 
@@ -255,17 +255,17 @@ const CreateIncidentReport = () => {
               fullWidth
               required
               select
-              label="Incident type"
+              label="Tipo de incidente"
               name="incidentType"
               value={form.incidentType}
               onChange={handleChange}
               margin="normal"
             >
-              <MenuItem value="DAMAGED_PACKAGE">Damaged package</MenuItem>
-              <MenuItem value="LOST_PACKAGE">Lost package</MenuItem>
-              <MenuItem value="WRONG_ADDRESS">Wrong address</MenuItem>
-              <MenuItem value="DELIVERY_DELAY">Delivery delay</MenuItem>
-              <MenuItem value="OTHER">Other</MenuItem>
+              <MenuItem value="DAMAGED_PACKAGE">Paquete dañado</MenuItem>
+              <MenuItem value="LOST_PACKAGE">Paquete perdido</MenuItem>
+              <MenuItem value="WRONG_ADDRESS">Dirección incorrecta</MenuItem>
+              <MenuItem value="DELIVERY_DELAY">Retraso en la entrega</MenuItem>
+              <MenuItem value="OTHER">Otro</MenuItem>
             </TextField>
 
             <TextField
@@ -273,7 +273,7 @@ const CreateIncidentReport = () => {
               required
               multiline
               rows={4}
-              label="Description"
+              label="Descripción"
               name="description"
               value={form.description}
               onChange={handleChange}
@@ -281,16 +281,16 @@ const CreateIncidentReport = () => {
             />
 
             <Typography fontWeight="bold" sx={{ mt: 2, mb: 1 }}>
-              Location
+              Ubicación
             </Typography>
 
             <LocationPicker value={location} onChange={setLocation} />
 
             {location && (
               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Latitude: {location.latitude}
+                Latitud: {location.latitude}
                 <br />
-                Longitude: {location.longitude}
+                Longitud: {location.longitude}
               </Typography>
             )}
 
@@ -308,7 +308,7 @@ const CreateIncidentReport = () => {
                 variant="outlined"
                 startIcon={<PhotoCameraIcon />}
               >
-                Add evidence
+                Agregar evidencia
                 <input
                   hidden
                   type="file"
@@ -321,7 +321,7 @@ const CreateIncidentReport = () => {
               {form.evidence && (
                 <img
                   src={form.evidence}
-                  alt="Evidence image"
+                  alt="Imagen de evidencia"
                   style={{ maxWidth: "40%" }}
                 />
               )}
@@ -333,14 +333,14 @@ const CreateIncidentReport = () => {
               disabled={loading}
               sx={{ mt: 3 }}
             >
-              {loading ? "Reporting..." : "Report incident"}
+              {loading ? "Reportando..." : "Reportar incidente"}
             </Button>
           </Box>
 
           {message && (
             <Alert
               severity={
-                message === "Incident reported successfully."
+                message === "Incidente reportado exitosamente."
                   ? "success"
                   : "error"
               }

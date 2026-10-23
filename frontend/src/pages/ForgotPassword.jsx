@@ -34,10 +34,10 @@ const ForgotPassword = () => {
       }
 
       setMessage(
-        "If an account exists with that email, you will receive a password reset link.",
+        "Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.",
       );
     } catch {
-      setMessage("Something went wrong. Please try again.");
+      setMessage("Algo salió mal. Por favor inténtalo de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -54,17 +54,17 @@ const ForgotPassword = () => {
       >
         <Paper elevation={3} sx={{ width: "100%", p: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Forgot password?
+            ¿Olvidaste tu contraseña?
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Enter your email and we'll send you a link to reset your password.
+            Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
-              label="Email"
+              label="Correo electrónico"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
               disabled={loading}
               sx={{ mt: 2 }}
             >
-              {loading ? "Sending..." : "Send reset link"}
+              {loading ? "Enviando..." : "Enviar enlace de restablecimiento"}
             </Button>
           </Box>
 
