@@ -47,13 +47,13 @@ const RequireUnAuth = () => {
 };
 
 const RequireAdmin = () => {
-    const { user, loading } = useAuth();
+    const { isAdmin, loading } = useAuth();
 
     if (loading) {
         return null;
     }
 
-    if (user?.role !== "ADMIN") {
+    if (!isAdmin) {
         return <Navigate to="/" replace />;
     }
 

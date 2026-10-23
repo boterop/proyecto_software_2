@@ -20,7 +20,7 @@ const roleLabel = (role) => {
 };
 
 const Home = () => {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   if (loading) {
     return (
@@ -55,7 +55,7 @@ const Home = () => {
             <Button component={RouterLink} to="/profile" variant="contained">
               Mi perfil
             </Button>
-            {user.role === "ADMIN" && (
+            {isAdmin && (
                 <Button
                     component={RouterLink}
                     to="/admin/users"
