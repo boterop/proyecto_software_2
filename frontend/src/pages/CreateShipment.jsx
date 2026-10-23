@@ -35,36 +35,36 @@ const validate = (form) => {
   const errors = {};
 
   if (!form.originAddress.trim()) {
-    errors.originAddress = "Origin address is required";
+    errors.originAddress = "La dirección de origen es requerida";
   }
   if (!form.destinationAddress.trim()) {
-    errors.destinationAddress = "Destination address is required";
+    errors.destinationAddress = "La dirección de destino es requerida";
   }
   if (!form.receiverName.trim()) {
-    errors.receiverName = "Receiver name is required";
+    errors.receiverName = "El nombre del receptor es requerido";
   }
   if (!/^[0-9+\- ]{7,15}$/.test(form.receiverPhone.trim())) {
-    errors.receiverPhone = "Invalid phone number";
+    errors.receiverPhone = "Número de teléfono inválido";
   }
   if (form.receiverEmail && !/^\S+@\S+\.\S+$/.test(form.receiverEmail)) {
-    errors.receiverEmail = "Invalid email";
+    errors.receiverEmail = "Correo inválido";
   }
   if (!form.packageDescription.trim()) {
-    errors.packageDescription = "Package description is required";
+    errors.packageDescription = "La descripción del paquete es requerida";
   }
   if (!isValidDimension(form.lengthCm)) {
-    errors.lengthCm = "Between 0 and 200 cm";
+    errors.lengthCm = "Entre 0 y 200 cm";
   }
   if (!isValidDimension(form.widthCm)) {
-    errors.widthCm = "Between 0 and 200 cm";
+    errors.widthCm = "Entre 0 y 200 cm";
   }
   if (!isValidDimension(form.heightCm)) {
-    errors.heightCm = "Between 0 and 200 cm";
+    errors.heightCm = "Entre 0 y 200 cm";
   }
   if (form.weightKg !== "") {
     const weight = Number(form.weightKg);
     if (Number.isNaN(weight) || weight <= 0 || weight > 50) {
-      errors.weightKg = "Between 0 and 50 kg";
+      errors.weightKg = "Entre 0 y 50 kg";
     }
   }
 
@@ -122,7 +122,7 @@ const CreateShipment = () => {
       setErrors({});
     } catch {
       setError(
-        "Could not create the shipment. Please review the data and try again.",
+        "No se pudo crear el envío. Por favor revise los datos e inténtelo de nuevo.",
       );
     } finally {
       setLoading(false);
@@ -146,25 +146,25 @@ const CreateShipment = () => {
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ my: 4, p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          New shipment
+          Nuevo envío
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit} noValidate>
-          {field("originAddress", "Origin address")}
-          {field("destinationAddress", "Destination address")}
-          {field("receiverName", "Receiver name")}
-          {field("receiverPhone", "Receiver phone")}
-          {field("receiverEmail", "Receiver email (optional)", {
+          {field("originAddress", "Dirección de origen")}
+          {field("destinationAddress", "Dirección de destino")}
+          {field("receiverName", "Nombre del receptor")}
+          {field("receiverPhone", "Teléfono del receptor")}
+          {field("receiverEmail", "Correo del receptor (opcional)", {
             type: "email",
           })}
-          {field("packageDescription", "Package description", {
+          {field("packageDescription", "Descripción del paquete", {
             multiline: true,
             minRows: 2,
           })}
-          {field("lengthCm", "Length (cm)", { type: "number" })}
-          {field("widthCm", "Width (cm)", { type: "number" })}
-          {field("heightCm", "Height (cm)", { type: "number" })}
-          {field("weightKg", "Weight (kg, optional)", { type: "number" })}
+          {field("lengthCm", "Longitud (cm)", { type: "number" })}
+          {field("widthCm", "Ancho (cm)", { type: "number" })}
+          {field("heightCm", "Altura (cm)", { type: "number" })}
+          {field("weightKg", "Peso (kg, opcional)", { type: "number" })}
 
           <Button
             fullWidth
@@ -173,13 +173,13 @@ const CreateShipment = () => {
             disabled={loading}
             sx={{ mt: 2 }}
           >
-            {loading ? "Sending..." : "Create shipment"}
+            {loading ? "Enviando..." : "Crear envío"}
           </Button>
         </Box>
 
         {trackingCode && (
           <Alert severity="success" sx={{ mt: 3 }}>
-            Shipment created. Tracking code: <strong>{trackingCode}</strong>
+            Envío creado. Código de seguimiento: <strong>{trackingCode}</strong>
           </Alert>
         )}
         {error && (

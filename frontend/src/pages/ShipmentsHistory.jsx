@@ -39,11 +39,11 @@ const ShipmentHistory = () => {
   });
 
   const [statuses] = useState([
-    { value: "", label: "All Statuses" },
-    { value: "pending", label: "Pending" },
-    { value: "in_transit", label: "In Transit" },
-    { value: "delivered", label: "Delivered" },
-    { value: "cancelled", label: "Cancelled" },
+    { value: "", label: "Todos los estados" },
+    { value: "pending", label: "Pendiente" },
+    { value: "in_transit", label: "En tránsito" },
+    { value: "delivered", label: "Entregado" },
+    { value: "cancelled", label: "Cancelado" },
   ]);
 
   const filteredShipments = useMemo(() => {
@@ -97,12 +97,12 @@ const ShipmentHistory = () => {
       try {
         const response = await api(`/shipments`);
         if (!response.ok) {
-          throw new Error("Failed to fetch shipments");
+          throw new Error("Error al obtener los envíos");
         }
         const data = await response.json();
         setShipments(data);
       } catch (err) {
-        setError("Error fetching shipments data");
+        setError("Error al cargar los datos de envíos");
         console.error("Error fetching shipments:", err);
       } finally {
         setLoading(false);
@@ -157,7 +157,7 @@ const ShipmentHistory = () => {
     <Container maxWidth="lg">
       <Paper sx={{ my: 4, p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Shipment History
+          Historial de envíos
         </Typography>
 
         {error && (
@@ -169,13 +169,13 @@ const ShipmentHistory = () => {
         <Card sx={{ mb: 3, p: 2 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              Filters
+              Filtros
             </Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   fullWidth
-                  label="Tracking Code"
+                  label="Código de seguimiento"
                   value={filters.trackingCode}
                   onChange={(e) =>
                     handleFilterChange("trackingCode", e.target.value)
@@ -185,7 +185,7 @@ const ShipmentHistory = () => {
               <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   fullWidth
-                  label="Origin"
+                  label="Origen"
                   value={filters.origin}
                   onChange={(e) => handleFilterChange("origin", e.target.value)}
                 />
@@ -193,7 +193,7 @@ const ShipmentHistory = () => {
               <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   fullWidth
-                  label="Destination"
+                  label="Destino"
                   value={filters.destination}
                   onChange={(e) =>
                     handleFilterChange("destination", e.target.value)
@@ -203,7 +203,7 @@ const ShipmentHistory = () => {
               <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   fullWidth
-                  label="Receiver Name"
+                  label="Nombre del receptor"
                   value={filters.receiverName}
                   onChange={(e) =>
                     handleFilterChange("receiverName", e.target.value)
@@ -212,7 +212,7 @@ const ShipmentHistory = () => {
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
                 <FormControl fullWidth>
-                  <InputLabel>Status</InputLabel>
+                  <InputLabel>Estado</InputLabel>
                   <Select
                     value={filters.status}
                     onChange={(e) =>
@@ -229,7 +229,7 @@ const ShipmentHistory = () => {
               </Grid>
               <Grid item xs={12} sm={12} md={12}>
                 <Button onClick={clearFilters} variant="outlined" fullWidth>
-                  Clear Filters
+                  Limpiar filtros
                 </Button>
               </Grid>
             </Grid>
@@ -240,27 +240,27 @@ const ShipmentHistory = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Tracking Code</TableCell>
-                <TableCell>Origin</TableCell>
-                <TableCell>Destination</TableCell>
-                <TableCell>Receiver</TableCell>
-                <TableCell>Dimensions</TableCell>
-                <TableCell>Weight</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Created At</TableCell>
+                <TableCell>Código de seguimiento</TableCell>
+                <TableCell>Origen</TableCell>
+                <TableCell>Destino</TableCell>
+                <TableCell>Receptor</TableCell>
+                <TableCell>Dimensiones</TableCell>
+                <TableCell>Peso</TableCell>
+                <TableCell>Estado</TableCell>
+                <TableCell>Creado en</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
-                    Loading shipments...
+                    Cargando envíos...
                   </TableCell>
                 </TableRow>
               ) : filteredShipments.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
-                    No shipments found
+                    No se encontraron envíos
                   </TableCell>
                 </TableRow>
               ) : (
@@ -313,7 +313,7 @@ const ShipmentHistory = () => {
 
         <Box sx={{ mt: 2, textAlign: "center" }}>
           <Typography variant="body2" color="textSecondary">
-            Total shipments: {filteredShipments.length}
+            Total de envíos: {filteredShipments.length}
           </Typography>
         </Box>
       </Paper>

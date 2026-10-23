@@ -121,7 +121,7 @@ const AdminUsers = () => {
             });
 
             if (!response.ok) {
-                throw new Error("Request failed");
+                throw new Error("Solicitud fallida");
             }
 
             const updated = await response.json();
@@ -146,7 +146,7 @@ const AdminUsers = () => {
             });
 
             if (!response.ok && response.status !== 404) {
-                throw new Error("Request failed");
+                throw new Error("Solicitud fallida");
             }
 
             setUsers((current) => current.filter((item) => item.id !== user.id));
