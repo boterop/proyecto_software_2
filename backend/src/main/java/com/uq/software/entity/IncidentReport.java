@@ -7,31 +7,44 @@ import jakarta.persistence.*;
 public class IncidentReport {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
   private Long deliveryId;
+
   @Column(nullable = false)
   private Long userId;
+
   @Column(nullable = false)
   private String incidentType;
+
   @Column(nullable = false)
   private String description;
+
   @Column(nullable = false)
   private String location;
+
   @Column(nullable = false)
   private String status;
+
   @Column(nullable = false)
   private String evidence;
+
   @Column(nullable = false)
   private Long timestamp;
 
-  protected IncidentReport() {
-  }
+  protected IncidentReport() {}
 
-  public IncidentReport(Long deliveryId, Long userId, String incidentType, String description, String location,
-      String status, String evidence, Long timestamp) {
+  public IncidentReport(
+      Long deliveryId,
+      Long userId,
+      String incidentType,
+      String description,
+      String location,
+      String status,
+      String evidence,
+      Long timestamp) {
     this.deliveryId = deliveryId;
     this.userId = userId;
     this.incidentType = incidentType;
@@ -42,8 +55,16 @@ public class IncidentReport {
     this.timestamp = timestamp;
   }
 
-  public IncidentReport(Long id, Long deliveryId, Long userId, String incidentType, String description, String location,
-      String status, String evidence, Long timestamp) {
+  public IncidentReport(
+      Long id,
+      Long deliveryId,
+      Long userId,
+      String incidentType,
+      String description,
+      String location,
+      String status,
+      String evidence,
+      Long timestamp) {
     this.id = id;
     this.deliveryId = deliveryId;
     this.userId = userId;
@@ -92,16 +113,30 @@ public class IncidentReport {
   }
 
   public String toJSON() {
-    return "{" +
-        "\"id\":" + id +
-        ", \"deliveryId\":" + deliveryId +
-        ", \"userId\":" + userId +
-        ", \"incidentType\":\"" + incidentType + "\"" +
-        ", \"description\":\"" + description + "\"" +
-        ", \"location\":\"" + location + "\"" +
-        ", \"status\":\"" + status + "\"" +
-        ", \"evidence\":\"" + evidence + "\"" +
-        ", \"timestamp\":" + timestamp +
-        "}";
+    return "{"
+        + "\"id\":"
+        + id
+        + ", \"deliveryId\":"
+        + deliveryId
+        + ", \"userId\":"
+        + userId
+        + ", \"incidentType\":\""
+        + incidentType
+        + "\""
+        + ", \"description\":\""
+        + description
+        + "\""
+        + ", \"location\":\""
+        + location
+        + "\""
+        + ", \"status\":\""
+        + status
+        + "\""
+        + ", \"evidence\":\""
+        + evidence
+        + "\""
+        + ", \"timestamp\":"
+        + timestamp
+        + "}";
   }
 }

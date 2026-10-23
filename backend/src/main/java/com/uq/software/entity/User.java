@@ -1,13 +1,14 @@
 package com.uq.software.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "users")
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(nullable = false)
@@ -15,16 +16,28 @@ public class User {
 
   @Column(unique = true, nullable = false)
   private String email;
+
   @Column(nullable = false)
   private String password;
 
-  protected User() {
-  }
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, columnDefinition = "varchar(20) not null default 'CLIENTE_EMISOR'")
+  private Role role = Role.CLIENTE_EMISOR;
 
+  protected User() {}
+
+  // Constructor original: se mantiene para no romper el código ni los tests
+  // existentes.
   public User(String name, String email, String password) {
     this.name = name;
     this.email = email;
     this.password = password;
+  }
+
+  // HU-01 (nuevo)
+  public User(String name, String email, String password, Role role) {
+    this(name, email, password);
+    this.role = role;
   }
 
   public Long getId() {
@@ -43,7 +56,26 @@ public class User {
     return password;
   }
 
-  public void updatePassword(String newPassword) {
-    this.password = newPassword; // TODO: Implement password hashing
+  public Role getRole() {
+    return role;
+  }
+
+  public void changeRole(Role role) {
+    if (role == null) {
+      throw new IllegalArgumentException("El rol no puede ser null");
+    }
+    this.role = role;
+  }
+
+  public void updatePassword(String newPassword, PasswordEncoder passwordEncoder) {
+    if (newPassword == null || newPassword.isBlank()) {
+      throw new IllegalArgumentException("La nueva contraseña no puede estar vacía");
+    }
+
+    if (passwordEncoder == null) {
+      throw new IllegalArgumentException("PasswordEncoder no puede ser null");
+    }
+
+    this.password = passwordEncoder.encode(newPassword);
   }
 }

@@ -92,8 +92,9 @@ describe("ResetPassword Component", () => {
 
     const updatedUser = await userResponse.json();
 
-    expect(updatedUser.password).toBe(newPassword);
+    expect(updatedUser.password).not.toBe(newPassword);
     expect(updatedUser.password).not.toBe(testUser.password);
+    expect(updatedUser.password).toMatch(/^\$2[aby]\$\d{2}\$/);
   });
 
   it("fail to reset password with invalid token", async () => {

@@ -1,5 +1,123 @@
+import { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Alert, Box, Button, Link, TextField } from "@mui/material";
+import AuthLayout from "../layouts/AuthLayout";
+import { api } from "@services/api.js";
+import { TestLocation } from "@components";
+
 const Login = () => {
-  return <div>Login</div>;
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const login = async (email, password) => {
+    const response = await api("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al iniciar sesión");
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setFormError("");
+    setFieldErrors({});
+    setLoading(true);
+
+    try {
+      await login(email.trim(), password);
+      navigate("/", { replace: true });
+    } catch (err) {
+      setFormError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AuthLayout
+      title="Iniciar sesión"
+      subtitle="Accede con tu correo y contraseña para gestionar tus envíos."
+      footer={
+        <>
+          ¿No tienes cuenta?{" "}
+          <Link component={RouterLink} to="/register" className="auth-link">
+            Regístrate
+          </Link>
+        </>
+      }
+    >
+      <Box component="form" onSubmit={handleSubmit} noValidate>
+        <TextField
+          fullWidth
+          id="email"
+          label="Correo electrónico"
+          type="email"
+          name="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+          autoComplete="email"
+          margin="normal"
+          error={Boolean(fieldErrors.email)}
+          helperText={fieldErrors.email}
+        />
+
+        <TextField
+          fullWidth
+          id="password"
+          label="Contraseña"
+          type="password"
+          name="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+          autoComplete="current-password"
+          margin="normal"
+          error={Boolean(fieldErrors.password)}
+          helperText={fieldErrors.password}
+        />
+
+        <div className="auth-form__row">
+          <Link
+            component={RouterLink}
+            to="/forgot-password"
+            className="auth-link"
+            underline="hover"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
+
+        {formError && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {formError}
+          </Alert>
+        )}
+
+        <div className="auth-form__actions">
+          <Button
+            fullWidth
+            id="submit"
+            type="submit"
+            variant="contained"
+            size="large"
+            disabled={loading}
+          >
+            {loading ? "Entrando…" : "Entrar"}
+          </Button>
+        </div>
+      </Box>
+      <TestLocation />
+    </AuthLayout>
+  );
 };
 
 export default Login;

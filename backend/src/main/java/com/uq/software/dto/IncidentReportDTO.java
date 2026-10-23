@@ -1,29 +1,44 @@
 package com.uq.software.dto;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class IncidentReportDTO {
   private Long id;
+
   @NotNull(message = "Delivery ID is required")
   private Long deliveryId;
+
   @NotNull(message = "User ID is required")
   private Long userId;
+
   @NotBlank(message = "Incident type is required")
   private String incidentType;
+
   @NotBlank(message = "Description is required")
   private String description;
+
   @NotBlank(message = "Location is required")
   private String location;
+
   @NotBlank(message = "Status is required")
   private String status;
+
   @NotBlank(message = "Evidence is required")
   private String evidence;
+
   @NotNull(message = "Timestamp is required")
   private Long timestamp;
 
-  public IncidentReportDTO(Long deliveryId, Long userId, String incidentType, String description,
-      String location, String status, String evidence, Long timestamp) {
+  public IncidentReportDTO(
+      Long deliveryId,
+      Long userId,
+      String incidentType,
+      String description,
+      String location,
+      String status,
+      String evidence,
+      Long timestamp) {
     this.deliveryId = deliveryId;
     this.userId = userId;
     this.incidentType = incidentType;

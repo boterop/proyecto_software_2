@@ -8,29 +8,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.uq.software.entity.Shipment;
+import com.uq.software.repository.ShipmentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.uq.software.entity.Shipment;
-import com.uq.software.repository.ShipmentRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 class ShipmentControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @Autowired
-  private ShipmentRepository shipmentRepository;
+  @Autowired private ShipmentRepository shipmentRepository;
 
-  private static final String VALID_BODY = """
+  private static final String VALID_BODY =
+      """
       {
         "senderId": 1,
         "originAddress": "Cra 14 #10-20, Armenia",
@@ -53,9 +51,8 @@ class ShipmentControllerTest {
 
   @Test
   void createShipment_returns201_withPendingStatusAndTrackingCode() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY))
+    mockMvc
+        .perform(post("/shipments").contentType(MediaType.APPLICATION_JSON).content(VALID_BODY))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").isNumber())
         .andExpect(jsonPath("$.status").value("PENDING"))
@@ -65,12 +62,13 @@ class ShipmentControllerTest {
 
   @Test
   void createShipment_ignoresClientProvidedStatusAndTrackingCode() throws Exception {
-    String body = VALID_BODY.replace("\"senderId\": 1,",
-        "\"senderId\": 1, \"status\": \"DELIVERED\", \"trackingCode\": \"HACK\",");
+    String body =
+        VALID_BODY.replace(
+            "\"senderId\": 1,",
+            "\"senderId\": 1, \"status\": \"DELIVERED\", \"trackingCode\": \"HACK\",");
 
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(body))
+    mockMvc
+        .perform(post("/shipments").contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.status").value("PENDING"))
         .andExpect(jsonPath("$.trackingCode", startsWith("UQ-")));
@@ -78,9 +76,11 @@ class ShipmentControllerTest {
 
   @Test
   void createShipment_emptyDestination_returns400() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY.replace("Calle 5 #20-30, Cali", "")))
+    mockMvc
+        .perform(
+            post("/shipments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(VALID_BODY.replace("Calle 5 #20-30, Cali", "")))
         .andExpect(status().isBadRequest());
 
     assertEquals(0, shipmentRepository.count());
@@ -88,41 +88,48 @@ class ShipmentControllerTest {
 
   @Test
   void createShipment_missingDimensions_returns400() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY.replace("\"heightCm\": 10,", "")))
+    mockMvc
+        .perform(
+            post("/shipments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(VALID_BODY.replace("\"heightCm\": 10,", "")))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void createShipment_withoutWeight_returns201() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY.replace(",\n  \"weightKg\": 2.5", "")))
+    mockMvc
+        .perform(
+            post("/shipments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(VALID_BODY.replace(",\n  \"weightKg\": 2.5", "")))
         .andExpect(status().isCreated());
   }
 
   @Test
   void createShipment_emptyBody_returns400() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content("{}"))
+    mockMvc
+        .perform(post("/shipments").contentType(MediaType.APPLICATION_JSON).content("{}"))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void createShipment_negativeWeight_returns400() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY.replace("2.5", "-1")))
+    mockMvc
+        .perform(
+            post("/shipments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(VALID_BODY.replace("2.5", "-1")))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void createShipment_invalidPhone_returns400() throws Exception {
-    mockMvc.perform(post("/shipments")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(VALID_BODY.replace("3001234567", "abc")))
+    mockMvc
+        .perform(
+            post("/shipments")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(VALID_BODY.replace("3001234567", "abc")))
         .andExpect(status().isBadRequest());
   }
 
@@ -130,37 +137,38 @@ class ShipmentControllerTest {
   void getShipmentById_returns200() throws Exception {
     Shipment shipment = saved();
 
-    mockMvc.perform(get("/shipments/" + shipment.getId()))
+    mockMvc
+        .perform(get("/shipments/" + shipment.getId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.trackingCode").value(shipment.getTrackingCode()));
   }
 
   @Test
   void getShipmentById_notFound_returns404() throws Exception {
-    mockMvc.perform(get("/shipments/999999"))
-        .andExpect(status().isNotFound());
+    mockMvc.perform(get("/shipments/999999")).andExpect(status().isNotFound());
   }
 
   @Test
   void getShipmentByTrackingCode_returns200() throws Exception {
     Shipment shipment = saved();
 
-    mockMvc.perform(get("/shipments/tracking/" + shipment.getTrackingCode()))
+    mockMvc
+        .perform(get("/shipments/tracking/" + shipment.getTrackingCode()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(shipment.getId()));
   }
 
   @Test
   void getShipmentByTrackingCode_notFound_returns404() throws Exception {
-    mockMvc.perform(get("/shipments/tracking/UQ-NOTFOUND"))
-        .andExpect(status().isNotFound());
+    mockMvc.perform(get("/shipments/tracking/UQ-NOTFOUND")).andExpect(status().isNotFound());
   }
 
   @Test
   void getShipmentsBySender_returnsList() throws Exception {
     saved();
 
-    mockMvc.perform(get("/shipments/sender/1"))
+    mockMvc
+        .perform(get("/shipments/sender/1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)));
   }

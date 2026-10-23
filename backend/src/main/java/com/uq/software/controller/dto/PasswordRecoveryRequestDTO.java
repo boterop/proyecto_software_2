@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public class PasswordRecoveryRequestDTO {
   @NotBlank(message = "Token is required")
   private String token;
+
   @NotBlank(message = "New password is required")
   private String newPassword;
 

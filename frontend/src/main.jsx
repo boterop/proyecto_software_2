@@ -10,7 +10,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+        <App />
       <CssBaseline />
     </ThemeProvider>
   </StrictMode>,
