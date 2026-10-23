@@ -43,8 +43,7 @@ const ShipmentHistory = () => {
     { value: "pending", label: "Pending" },
     { value: "in_transit", label: "In Transit" },
     { value: "delivered", label: "Delivered" },
-    { value: "delayed", label: "Delayed" },
-    { value: "returned", label: "Returned" },
+    { value: "cancelled", label: "Cancelled" },
   ]);
 
   const filteredShipments = useMemo(() => {
@@ -138,7 +137,7 @@ const ShipmentHistory = () => {
       in_transit: "info",
       delivered: "success",
       delayed: "error",
-      returned: "secondary",
+      cancelled: "secondary",
     };
 
     const color = colors[status] || "default";
