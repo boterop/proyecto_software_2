@@ -23,14 +23,13 @@ import {
   Alert,
 } from "@mui/material";
 import { api } from "@services/api.js";
+import { useMemo } from "react";
 
 const ShipmentHistory = () => {
   const [shipments, setShipments] = useState([]);
-  const [filteredShipments, setFilteredShipments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Filter states
   const [filters, setFilters] = useState({
     trackingCode: "",
     origin: "",
@@ -48,31 +47,7 @@ const ShipmentHistory = () => {
     { value: "returned", label: "Returned" },
   ]);
 
-  // Fetch shipments data
-  useEffect(() => {
-    const fetchShipments = async () => {
-      setLoading(true);
-      try {
-        const response = await api(`/shipments`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch shipments");
-        }
-        const data = await response.json();
-        setShipments(data);
-        setFilteredShipments(data);
-      } catch (err) {
-        setError("Error fetching shipments data");
-        console.error("Error fetching shipments:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchShipments();
-  }, []);
-
-  // Apply filters
-  useEffect(() => {
+  const filteredShipments = useMemo(() => {
     let result = shipments;
 
     if (filters.trackingCode) {
@@ -108,13 +83,37 @@ const ShipmentHistory = () => {
     }
 
     if (filters.status) {
-      result = result.filter((shipment) => 
-        shipment.status.toLowerCase() === filters.status.toLowerCase()
+      result = result.filter(
+        (shipment) =>
+          shipment.status.toLowerCase() === filters.status.toLowerCase(),
       );
     }
 
-    setFilteredShipments(result);
-  }, [filters, shipments]);
+    return result;
+  }, [shipments, filters]);
+
+  useEffect(() => {
+    const fetchShipments = async () => {
+      setLoading(true);
+      try {
+        const response = await api(`/shipments`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch shipments");
+        }
+        const data = await response.json();
+        setShipments(data);
+      } catch (err) {
+        setError("Error fetching shipments data");
+        console.error("Error fetching shipments:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShipments();
+  }, []);
+
+  useEffect(() => {}, [filters, shipments]);
 
   const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
@@ -134,26 +133,15 @@ const ShipmentHistory = () => {
   };
 
   const getStatusChip = (status) => {
-    let color = "default";
-    switch (status) {
-      case "pending":
-        color = "warning";
-        break;
-      case "in_transit":
-        color = "info";
-        break;
-      case "delivered":
-        color = "success";
-        break;
-      case "delayed":
-        color = "error";
-        break;
-      case "returned":
-        color = "secondary";
-        break;
-      default:
-        color = "default";
-    }
+    const colors = {
+      pending: "warning",
+      in_transit: "info",
+      delivered: "success",
+      delayed: "error",
+      returned: "secondary",
+    };
+
+    const color = colors[status] || "default";
 
     return <Chip label={status.replace("_", " ")} size="small" color={color} />;
   };
@@ -335,4 +323,3 @@ const ShipmentHistory = () => {
 };
 
 export default ShipmentHistory;
-
