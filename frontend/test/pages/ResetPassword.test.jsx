@@ -75,7 +75,7 @@ describe("ResetPassword Component", () => {
     const confirmPasswordInput = document.getElementById("confirmPassword");
 
     const submitButton = screen.getByRole("button", {
-      name: "Reset password",
+      name: "Restablecer contraseña",
     });
 
     await user.type(newPasswordInput, newPassword);
@@ -83,7 +83,7 @@ describe("ResetPassword Component", () => {
     await user.click(submitButton);
 
     expect(
-      await screen.findByText("Your password has been reset successfully."),
+      await screen.findByText("Tu contraseña se ha restablecido correctamente."),
     ).toBeDefined();
 
     const userResponse = await fetch(`${API_URL}/test/users/${testUser.id}`, {
@@ -109,7 +109,7 @@ describe("ResetPassword Component", () => {
     const confirmPasswordInput = document.getElementById("confirmPassword");
 
     const submitButton = screen.getByRole("button", {
-      name: "Reset password",
+      name: "Restablecer contraseña",
     });
 
     await user.type(newPasswordInput, newPassword);
@@ -117,7 +117,7 @@ describe("ResetPassword Component", () => {
     await user.click(submitButton);
 
     expect(
-      await screen.findByText("The reset link is invalid or has expired."),
+      await screen.findByText("El enlace de restablecimiento no es válido o ha expirado."),
     ).toBeDefined();
   });
 
@@ -132,13 +132,13 @@ describe("ResetPassword Component", () => {
     const confirmPasswordInput = document.getElementById("confirmPassword");
 
     const submitButton = screen.getByRole("button", {
-      name: "Reset password",
+      name: "Restablecer contraseña",
     });
 
     await user.type(newPasswordInput, "newPassword");
     await user.type(confirmPasswordInput, "nomatch");
     await user.click(submitButton);
 
-    expect(await screen.findByText("Passwords do not match.")).toBeDefined();
+    expect(await screen.findByText("Las contraseñas no coinciden.")).toBeDefined();
   });
 });
