@@ -5,13 +5,13 @@ import com.uq.software.dto.UserProfileResponse;
 import com.uq.software.service.UserProfileService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 /** HU-02. URLs reales: GET/PUT /api/user-profiles/{userId} */
 @RestController
@@ -23,6 +23,7 @@ public class UserProfileController {
   public UserProfileController(UserProfileService userProfileService) {
     this.userProfileService = userProfileService;
   }
+
   @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @GetMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> get(@PathVariable Long userId) {
@@ -31,6 +32,7 @@ public class UserProfileController {
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
+
   @PreAuthorize("hasRole('ADMIN') or @userProfileService.isOwner(#userId, authentication.name)")
   @PutMapping("/{userId}")
   public ResponseEntity<UserProfileResponse> save(

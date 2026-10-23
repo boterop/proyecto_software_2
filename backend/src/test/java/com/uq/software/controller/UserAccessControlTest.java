@@ -25,93 +25,93 @@ import org.springframework.web.context.WebApplicationContext;
 @Transactional
 class UserAccessControlTest {
 
-    @Autowired private WebApplicationContext context;
+  @Autowired private WebApplicationContext context;
 
-    @Autowired private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-    }
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+  }
 
-    @Test
-    void testProfileRequiresAuthentication() throws Exception {
-        mockMvc.perform(get("/user-profiles/1")).andExpect(status().isUnauthorized());
-    }
+  @Test
+  void testProfileRequiresAuthentication() throws Exception {
+    mockMvc.perform(get("/user-profiles/1")).andExpect(status().isUnauthorized());
+  }
 
-    @Test
-    @WithMockUser(username = "dueno@email.com")
-    void testOwnerCanReadAndUpdateOwnProfile() throws Exception {
-        User user = userRepository.save(new User("Ana", "dueno@email.com", "hash"));
+  @Test
+  @WithMockUser(username = "dueno@email.com")
+  void testOwnerCanReadAndUpdateOwnProfile() throws Exception {
+    User user = userRepository.save(new User("Ana", "dueno@email.com", "hash"));
 
-        mockMvc.perform(get("/user-profiles/" + user.getId())).andExpect(status().isOk());
+    mockMvc.perform(get("/user-profiles/" + user.getId())).andExpect(status().isOk());
 
-        mockMvc
-                .perform(
-                        put("/user-profiles/" + user.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"city\": \"Armenia\" }"))
-                .andExpect(status().isOk());
-    }
+    mockMvc
+        .perform(
+            put("/user-profiles/" + user.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"city\": \"Armenia\" }"))
+        .andExpect(status().isOk());
+  }
 
-    @Test
-    @WithMockUser(username = "intruso@email.com")
-    void testUserCannotAccessAnotherProfile() throws Exception {
-        User other = userRepository.save(new User("Ana", "ajena@email.com", "hash"));
+  @Test
+  @WithMockUser(username = "intruso@email.com")
+  void testUserCannotAccessAnotherProfile() throws Exception {
+    User other = userRepository.save(new User("Ana", "ajena@email.com", "hash"));
 
-        mockMvc.perform(get("/user-profiles/" + other.getId())).andExpect(status().isForbidden());
+    mockMvc.perform(get("/user-profiles/" + other.getId())).andExpect(status().isForbidden());
 
-        mockMvc
-                .perform(
-                        put("/user-profiles/" + other.getId())
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"city\": \"Armenia\" }"))
-                .andExpect(status().isForbidden());
-    }
+    mockMvc
+        .perform(
+            put("/user-profiles/" + other.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"city\": \"Armenia\" }"))
+        .andExpect(status().isForbidden());
+  }
 
-    @Test
-    @WithMockUser(username = "admin@email.com", roles = "ADMIN")
-    void testAdminCanAccessAnyProfile() throws Exception {
-        User other = userRepository.save(new User("Ana", "otra@email.com", "hash"));
+  @Test
+  @WithMockUser(username = "admin@email.com", roles = "ADMIN")
+  void testAdminCanAccessAnyProfile() throws Exception {
+    User other = userRepository.save(new User("Ana", "otra@email.com", "hash"));
 
-        mockMvc.perform(get("/user-profiles/" + other.getId())).andExpect(status().isOk());
-    }
+    mockMvc.perform(get("/user-profiles/" + other.getId())).andExpect(status().isOk());
+  }
 
-    @Test
-    @WithMockUser(username = "cliente@email.com", roles = "CLIENTE_EMISOR")
-    void testNonAdminCannotUseAdminEndpoints() throws Exception {
-        User other = userRepository.save(new User("Ana", "victima@email.com", "hash"));
+  @Test
+  @WithMockUser(username = "cliente@email.com", roles = "CLIENTE_EMISOR")
+  void testNonAdminCannotUseAdminEndpoints() throws Exception {
+    User other = userRepository.save(new User("Ana", "victima@email.com", "hash"));
 
-        mockMvc.perform(get("/admin/users")).andExpect(status().isForbidden());
-        mockMvc.perform(delete("/admin/users/" + other.getId())).andExpect(status().isForbidden());
-        mockMvc
-                .perform(
-                        put("/admin/users/" + other.getId() + "/role")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"role\": \"ADMIN\" }"))
-                .andExpect(status().isForbidden());
-    }
+    mockMvc.perform(get("/admin/users")).andExpect(status().isForbidden());
+    mockMvc.perform(delete("/admin/users/" + other.getId())).andExpect(status().isForbidden());
+    mockMvc
+        .perform(
+            put("/admin/users/" + other.getId() + "/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"role\": \"ADMIN\" }"))
+        .andExpect(status().isForbidden());
+  }
 
-    @Test
-    @WithMockUser(username = "admin@email.com", roles = "ADMIN")
-    void testAdminCanListUsers() throws Exception {
-        mockMvc.perform(get("/admin/users")).andExpect(status().isOk());
-    }
+  @Test
+  @WithMockUser(username = "admin@email.com", roles = "ADMIN")
+  void testAdminCanListUsers() throws Exception {
+    mockMvc.perform(get("/admin/users")).andExpect(status().isOk());
+  }
 
-    @Test
-    @WithMockUser(username = "admin-self@email.com", roles = "ADMIN")
-    void testAdminCannotChangeOwnRoleNorDeleteSelf() throws Exception {
-        User admin = userRepository.save(new User("Admin", "admin-self@email.com", "hash", Role.ADMIN));
+  @Test
+  @WithMockUser(username = "admin-self@email.com", roles = "ADMIN")
+  void testAdminCannotChangeOwnRoleNorDeleteSelf() throws Exception {
+    User admin = userRepository.save(new User("Admin", "admin-self@email.com", "hash", Role.ADMIN));
 
-        mockMvc
-                .perform(
-                        put("/admin/users/" + admin.getId() + "/role")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"role\": \"CLIENTE_EMISOR\" }"))
-                .andExpect(status().isConflict());
+    mockMvc
+        .perform(
+            put("/admin/users/" + admin.getId() + "/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"role\": \"CLIENTE_EMISOR\" }"))
+        .andExpect(status().isConflict());
 
-        mockMvc.perform(delete("/admin/users/" + admin.getId())).andExpect(status().isConflict());
-    }
+    mockMvc.perform(delete("/admin/users/" + admin.getId())).andExpect(status().isConflict());
+  }
 }

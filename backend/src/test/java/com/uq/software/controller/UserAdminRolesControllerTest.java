@@ -22,97 +22,97 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 class UserAdminRolesControllerTest {
-    private final String endpoint = "/admin/users";
+  private final String endpoint = "/admin/users";
 
-    @Autowired private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-    @Autowired private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-    @Test
-    void testCreateUserHashesPasswordAndSetsRole() throws Exception {
-        String body =
-                """
+  @Test
+  void testCreateUserHashesPasswordAndSetsRole() throws Exception {
+    String body =
+        """
                 { "name": "Carlos Repartidor", "email": "Carlos@Email.com",
                   "password": "Segura#123", "role": "REPARTIDOR" }
                 """;
 
-        mockMvc
-                .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value("carlos@email.com"))
-                .andExpect(jsonPath("$.role").value("REPARTIDOR"))
-                .andExpect(jsonPath("$.password").doesNotExist());
+    mockMvc
+        .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.email").value("carlos@email.com"))
+        .andExpect(jsonPath("$.role").value("REPARTIDOR"))
+        .andExpect(jsonPath("$.password").doesNotExist());
 
-        User saved = userRepository.findByEmail("carlos@email.com").orElseThrow();
-        assertThat(saved.getPassword()).isNotEqualTo("Segura#123");
-        assertThat(passwordEncoder.matches("Segura#123", saved.getPassword())).isTrue();
-        assertThat(saved.getRole()).isEqualTo(Role.REPARTIDOR);
-    }
+    User saved = userRepository.findByEmail("carlos@email.com").orElseThrow();
+    assertThat(saved.getPassword()).isNotEqualTo("Segura#123");
+    assertThat(passwordEncoder.matches("Segura#123", saved.getPassword())).isTrue();
+    assertThat(saved.getRole()).isEqualTo(Role.REPARTIDOR);
+  }
 
-    @Test
-    void testCreateUserDuplicateEmail() throws Exception {
-        userRepository.save(new User("Ana", "duplicado@email.com", "hash"));
+  @Test
+  void testCreateUserDuplicateEmail() throws Exception {
+    userRepository.save(new User("Ana", "duplicado@email.com", "hash"));
 
-        String body =
-                """
+    String body =
+        """
                 { "name": "Otra Ana", "email": "duplicado@email.com",
                   "password": "Segura#123", "role": "CLIENTE_EMISOR" }
                 """;
 
-        mockMvc
-                .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isConflict());
-    }
+    mockMvc
+        .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
+        .andExpect(status().isConflict());
+  }
 
-    @Test
-    void testCreateUserValidation() throws Exception {
-        String body =
-                """
+  @Test
+  void testCreateUserValidation() throws Exception {
+    String body =
+        """
                 { "name": "", "email": "no-es-correo", "password": "123" }
                 """;
 
-        mockMvc
-                .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(post(endpoint).contentType(MediaType.APPLICATION_JSON).content(body))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    void testChangeRole() throws Exception {
-        User user = userRepository.save(new User("Ana", "rol1@email.com", "hash"));
+  @Test
+  void testChangeRole() throws Exception {
+    User user = userRepository.save(new User("Ana", "rol1@email.com", "hash"));
 
-        mockMvc
-                .perform(
-                        put(endpoint + "/" + user.getId() + "/role")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"role\": \"CLIENTE_RECEPTOR\" }"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.role").value("CLIENTE_RECEPTOR"));
+    mockMvc
+        .perform(
+            put(endpoint + "/" + user.getId() + "/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"role\": \"CLIENTE_RECEPTOR\" }"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.role").value("CLIENTE_RECEPTOR"));
 
-        assertThat(userRepository.findById(user.getId()).orElseThrow().getRole())
-                .isEqualTo(Role.CLIENTE_RECEPTOR);
-    }
+    assertThat(userRepository.findById(user.getId()).orElseThrow().getRole())
+        .isEqualTo(Role.CLIENTE_RECEPTOR);
+  }
 
-    @Test
-    void testChangeRoleInvalidValue() throws Exception {
-        User user = userRepository.save(new User("Ana", "rol2@email.com", "hash"));
+  @Test
+  void testChangeRoleInvalidValue() throws Exception {
+    User user = userRepository.save(new User("Ana", "rol2@email.com", "hash"));
 
-        mockMvc
-                .perform(
-                        put(endpoint + "/" + user.getId() + "/role")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"role\": \"SUPERMAN\" }"))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            put(endpoint + "/" + user.getId() + "/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"role\": \"SUPERMAN\" }"))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    void testChangeRoleUserNotFound() throws Exception {
-        mockMvc
-                .perform(
-                        put(endpoint + "/999999/role")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{ \"role\": \"ADMIN\" }"))
-                .andExpect(status().isNotFound());
-    }
+  @Test
+  void testChangeRoleUserNotFound() throws Exception {
+    mockMvc
+        .perform(
+            put(endpoint + "/999999/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"role\": \"ADMIN\" }"))
+        .andExpect(status().isNotFound());
+  }
 }

@@ -23,10 +23,10 @@ public class UserAdminService {
   private final PasswordEncoder passwordEncoder;
 
   public UserAdminService(
-          UserRepository userRepository,
-          UserProfileRepository userProfileRepository,
-          PasswordResetTokenRepository passwordResetTokenRepository,
-          PasswordEncoder passwordEncoder) {
+      UserRepository userRepository,
+      UserProfileRepository userProfileRepository,
+      PasswordResetTokenRepository passwordResetTokenRepository,
+      PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.userProfileRepository = userProfileRepository;
     this.passwordResetTokenRepository = passwordResetTokenRepository;
@@ -49,7 +49,7 @@ public class UserAdminService {
     }
     try {
       return userRepository.saveAndFlush(
-              new User(name.trim(), normalizedEmail, passwordEncoder.encode(password), role));
+          new User(name.trim(), normalizedEmail, passwordEncoder.encode(password), role));
     } catch (DataIntegrityViolationException e) {
       throw new EmailAlreadyExistsException();
     }
@@ -59,12 +59,12 @@ public class UserAdminService {
   @Transactional
   public Optional<User> changeRole(Long id, Role role) {
     return userRepository
-            .findById(id)
-            .map(
-                    user -> {
-                      user.changeRole(role);
-                      return userRepository.save(user);
-                    });
+        .findById(id)
+        .map(
+            user -> {
+              user.changeRole(role);
+              return userRepository.save(user);
+            });
   }
 
   /** true si el usuario {id} es el dueño del correo indicado. */

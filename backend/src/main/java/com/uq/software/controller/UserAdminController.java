@@ -42,34 +42,35 @@ public class UserAdminController {
   @GetMapping("/{id}")
   public ResponseEntity<UserSummaryResponse> get(@PathVariable Long id) {
     return userAdminService
-            .getById(id)
-            .map(UserSummaryResponse::from)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        .getById(id)
+        .map(UserSummaryResponse::from)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
   public ResponseEntity<UserSummaryResponse> create(
-          @Valid @RequestBody AdminCreateUserRequest request) {
+      @Valid @RequestBody AdminCreateUserRequest request) {
     User created =
-            userAdminService.create(request.name(), request.email(), request.password(), request.role());
+        userAdminService.create(
+            request.name(), request.email(), request.password(), request.role());
     return ResponseEntity.status(HttpStatus.CREATED).body(UserSummaryResponse.from(created));
   }
 
   /** El administrador no puede cambiar su propio rol (evita quedarse sin administradores). */
   @PutMapping("/{id}/role")
   public ResponseEntity<UserSummaryResponse> changeRole(
-          @PathVariable Long id,
-          @Valid @RequestBody RoleUpdateRequest request,
-          Authentication authentication) {
+      @PathVariable Long id,
+      @Valid @RequestBody RoleUpdateRequest request,
+      Authentication authentication) {
     if (isSelf(id, authentication)) {
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
     return userAdminService
-            .changeRole(id, request.role())
-            .map(UserSummaryResponse::from)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+        .changeRole(id, request.role())
+        .map(UserSummaryResponse::from)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
   /** El administrador no puede eliminar su propia cuenta. */
@@ -79,8 +80,8 @@ public class UserAdminController {
       return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
     return userAdminService.delete(id)
-            ? ResponseEntity.noContent().build()
-            : ResponseEntity.notFound().build();
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.notFound().build();
   }
 
   private boolean isSelf(Long id, Authentication authentication) {
