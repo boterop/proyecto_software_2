@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
-    List<Shipment> findAll();
+  List<Shipment> findAll();
 
-    Optional<Shipment> findByTrackingCode(String trackingCode);
+  Optional<Shipment> findByTrackingCode(String trackingCode);
 
   List<Shipment> findBySenderId(Long senderId);
 
