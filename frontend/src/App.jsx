@@ -18,6 +18,7 @@ import CreateIncidentReport from "./pages/CreateIncidentReport";
 import Profile from "./pages/Profile";
 import AdminUsers from "./pages/AdminUsers";
 import ShipmentsHistory from "./pages/ShipmentsHistory";
+import AppLayout from "./layouts/AppLayout";
 import { useAuth } from "./hooks/useAuth";
 
 const RequireAuth = () => {
@@ -72,17 +73,19 @@ const App = () => (
         <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Route>
       <Route element={<RequireAuth />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/shipments/new" element={<CreateShipment />} />
-        <Route path="/shipments" element={<ShipmentsHistory />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route
-          path="/incident-reports/new"
-          element={<CreateIncidentReport />}
-        />
-        <Route element={<RequireAdmin />}>
-          <Route path="/profile/:userId" element={<Profile />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/shipments/new" element={<CreateShipment />} />
+          <Route path="/shipments" element={<ShipmentsHistory />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/incident-reports/new"
+            element={<CreateIncidentReport />}
+          />
+          <Route element={<RequireAdmin />}>
+            <Route path="/profile/:userId" element={<Profile />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
