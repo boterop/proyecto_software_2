@@ -12,69 +12,69 @@ import jakarta.persistence.Table;
 @Table(name = "shipment_assignments")
 public class ShipmentAssignment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private Long shipmentId;
+  @Column(nullable = false)
+  private Long shipmentId;
 
-    // null cuando es la primera asignación
-    private Long previousCourierId;
+  // null cuando es la primera asignación
+  private Long previousCourierId;
 
-    @Column(nullable = false)
-    private Long newCourierId;
+  @Column(nullable = false)
+  private Long newCourierId;
 
-    // correo del admin que hizo el cambio
-    @Column(nullable = false)
-    private String assignedBy;
+  // correo del admin que hizo el cambio
+  @Column(nullable = false)
+  private String assignedBy;
 
-    private String reason;
+  private String reason;
 
-    @Column(nullable = false)
-    private Long createdAt;
+  @Column(nullable = false)
+  private Long createdAt;
 
-    protected ShipmentAssignment() {}
+  protected ShipmentAssignment() {}
 
-    public ShipmentAssignment(
-            Long shipmentId,
-            Long previousCourierId,
-            Long newCourierId,
-            String assignedBy,
-            String reason) {
-        this.shipmentId = shipmentId;
-        this.previousCourierId = previousCourierId;
-        this.newCourierId = newCourierId;
-        this.assignedBy = assignedBy;
-        this.reason = reason;
-        this.createdAt = System.currentTimeMillis();
-    }
+  public ShipmentAssignment(
+      Long shipmentId,
+      Long previousCourierId,
+      Long newCourierId,
+      String assignedBy,
+      String reason) {
+    this.shipmentId = shipmentId;
+    this.previousCourierId = previousCourierId;
+    this.newCourierId = newCourierId;
+    this.assignedBy = assignedBy;
+    this.reason = reason;
+    this.createdAt = System.currentTimeMillis();
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public Long getShipmentId() {
-        return shipmentId;
-    }
+  public Long getShipmentId() {
+    return shipmentId;
+  }
 
-    public Long getPreviousCourierId() {
-        return previousCourierId;
-    }
+  public Long getPreviousCourierId() {
+    return previousCourierId;
+  }
 
-    public Long getNewCourierId() {
-        return newCourierId;
-    }
+  public Long getNewCourierId() {
+    return newCourierId;
+  }
 
-    public String getAssignedBy() {
-        return assignedBy;
-    }
+  public String getAssignedBy() {
+    return assignedBy;
+  }
 
-    public String getReason() {
-        return reason;
-    }
+  public String getReason() {
+    return reason;
+  }
 
-    public Long getCreatedAt() {
-        return createdAt;
-    }
+  public Long getCreatedAt() {
+    return createdAt;
+  }
 }

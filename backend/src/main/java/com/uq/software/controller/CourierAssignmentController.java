@@ -26,69 +26,69 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class CourierAssignmentController {
 
-    private final CourierAssignmentService assignmentService;
+  private final CourierAssignmentService assignmentService;
 
-    public CourierAssignmentController(CourierAssignmentService assignmentService) {
-        this.assignmentService = assignmentService;
-    }
+  public CourierAssignmentController(CourierAssignmentService assignmentService) {
+    this.assignmentService = assignmentService;
+  }
 
-    @PostMapping("/shipments/{shipmentId}/assign")
-    public ShipmentResponseDTO assign(
-            @PathVariable Long shipmentId,
-            @Valid @RequestBody AssignCourierRequest request,
-            Authentication authentication) {
-        Shipment shipment =
-                assignmentService.assign(
-                        shipmentId, request.courierId(), request.reason(), adminEmail(authentication));
-        return toDTO(shipment);
-    }
+  @PostMapping("/shipments/{shipmentId}/assign")
+  public ShipmentResponseDTO assign(
+      @PathVariable Long shipmentId,
+      @Valid @RequestBody AssignCourierRequest request,
+      Authentication authentication) {
+    Shipment shipment =
+        assignmentService.assign(
+            shipmentId, request.courierId(), request.reason(), adminEmail(authentication));
+    return toDTO(shipment);
+  }
 
-    @PutMapping("/shipments/{shipmentId}/reassign")
-    public ShipmentResponseDTO reassign(
-            @PathVariable Long shipmentId,
-            @Valid @RequestBody AssignCourierRequest request,
-            Authentication authentication) {
-        Shipment shipment =
-                assignmentService.reassign(
-                        shipmentId, request.courierId(), request.reason(), adminEmail(authentication));
-        return toDTO(shipment);
-    }
+  @PutMapping("/shipments/{shipmentId}/reassign")
+  public ShipmentResponseDTO reassign(
+      @PathVariable Long shipmentId,
+      @Valid @RequestBody AssignCourierRequest request,
+      Authentication authentication) {
+    Shipment shipment =
+        assignmentService.reassign(
+            shipmentId, request.courierId(), request.reason(), adminEmail(authentication));
+    return toDTO(shipment);
+  }
 
-    @GetMapping("/shipments/{shipmentId}/assignments")
-    public List<ShipmentAssignmentResponse> history(@PathVariable Long shipmentId) {
-        return assignmentService.getHistory(shipmentId).stream()
-                .map(ShipmentAssignmentResponse::from)
-                .toList();
-    }
+  @GetMapping("/shipments/{shipmentId}/assignments")
+  public List<ShipmentAssignmentResponse> history(@PathVariable Long shipmentId) {
+    return assignmentService.getHistory(shipmentId).stream()
+        .map(ShipmentAssignmentResponse::from)
+        .toList();
+  }
 
-    @GetMapping("/couriers")
-    public List<CourierLoadResponse> couriers() {
-        return assignmentService.getCouriersWithLoad();
-    }
+  @GetMapping("/couriers")
+  public List<CourierLoadResponse> couriers() {
+    return assignmentService.getCouriersWithLoad();
+  }
 
-    // en los tests la seguridad está abierta y puede no haber usuario autenticado
-    private String adminEmail(Authentication authentication) {
-        return authentication != null ? authentication.getName() : "desconocido";
-    }
+  // en los tests la seguridad está abierta y puede no haber usuario autenticado
+  private String adminEmail(Authentication authentication) {
+    return authentication != null ? authentication.getName() : "desconocido";
+  }
 
-    // mismo mapeo que usa ShipmentController (HU-04)
-    private ShipmentResponseDTO toDTO(Shipment shipment) {
-        return new ShipmentResponseDTO(
-                shipment.getId(),
-                shipment.getTrackingCode(),
-                shipment.getSenderId(),
-                shipment.getCourierId(),
-                shipment.getOriginAddress(),
-                shipment.getDestinationAddress(),
-                shipment.getReceiverName(),
-                shipment.getReceiverPhone(),
-                shipment.getReceiverEmail(),
-                shipment.getPackageDescription(),
-                shipment.getLengthCm(),
-                shipment.getWidthCm(),
-                shipment.getHeightCm(),
-                shipment.getWeightKg(),
-                shipment.getStatus().name(),
-                shipment.getCreatedAt());
-    }
+  // mismo mapeo que usa ShipmentController (HU-04)
+  private ShipmentResponseDTO toDTO(Shipment shipment) {
+    return new ShipmentResponseDTO(
+        shipment.getId(),
+        shipment.getTrackingCode(),
+        shipment.getSenderId(),
+        shipment.getCourierId(),
+        shipment.getOriginAddress(),
+        shipment.getDestinationAddress(),
+        shipment.getReceiverName(),
+        shipment.getReceiverPhone(),
+        shipment.getReceiverEmail(),
+        shipment.getPackageDescription(),
+        shipment.getLengthCm(),
+        shipment.getWidthCm(),
+        shipment.getHeightCm(),
+        shipment.getWeightKg(),
+        shipment.getStatus().name(),
+        shipment.getCreatedAt());
+  }
 }
