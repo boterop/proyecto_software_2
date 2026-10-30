@@ -88,6 +88,16 @@ const Home = () => {
               Administrar usuarios
             </Button>
           )}
+          {isAdmin && (
+            <Button
+              component={RouterLink}
+              to="/admin/shipments"
+              variant="contained"
+              color="secondary"
+            >
+              Asignar repartidores
+            </Button>
+          )}
         </Box>
       </div>
       <TestLocation />

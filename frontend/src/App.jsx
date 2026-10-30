@@ -17,6 +17,7 @@ import CreateShipment from "./pages/CreateShipment";
 import CreateIncidentReport from "./pages/CreateIncidentReport";
 import Profile from "./pages/Profile";
 import AdminUsers from "./pages/AdminUsers";
+import AssignCouriers from "./pages/AssignCouriers";
 import ShipmentsHistory from "./pages/ShipmentsHistory";
 import { useAuth } from "./hooks/useAuth";
 
@@ -83,6 +84,7 @@ const App = () => (
         <Route element={<RequireAdmin />}>
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/shipments" element={<AssignCouriers />} />
         </Route>
       </Route>
     </Routes>
