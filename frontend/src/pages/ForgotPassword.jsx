@@ -14,33 +14,23 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     setLoading(true);
     setMessage("");
 
-    try {
-      const response = await fetch(`${API_URL}/password-recovery/reset`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+    fetch(`${API_URL}/password-recovery/reset`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    }).finally(() => setLoading(false));
 
-      if (!response.ok) {
-        throw new Error("Request failed");
-      }
-
-      setMessage(
-        "Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.",
-      );
-    } catch {
-      setMessage("Algo salió mal. Por favor inténtalo de nuevo.");
-    } finally {
-      setLoading(false);
-    }
+    setMessage(
+      "Si existe una cuenta con ese correo, recibirás un enlace para restablecer tu contraseña.",
+    );
   };
 
   return (
@@ -58,7 +48,8 @@ const ForgotPassword = () => {
           </Typography>
 
           <Typography color="text.secondary" sx={{ mb: 3 }}>
-            Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+            Ingresa tu correo y te enviaremos un enlace para restablecer tu
+            contraseña.
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit}>
