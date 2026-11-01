@@ -74,18 +74,20 @@ const App = () => (
         <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Route>
       <Route element={<RequireAuth />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/shipments/new" element={<CreateShipment />} />
-        <Route path="/shipments" element={<ShipmentsHistory />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route
-          path="/incident-reports/new"
-          element={<CreateIncidentReport />}
-        />
-        <Route element={<RequireAdmin />}>
-          <Route path="/profile/:userId" element={<Profile />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/shipments" element={<AssignCouriers />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/shipments/new" element={<CreateShipment />} />
+          <Route path="/shipments" element={<ShipmentsHistory />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/incident-reports/new"
+            element={<CreateIncidentReport />}
+          />
+          <Route element={<RequireAdmin />}>
+            <Route path="/profile/:userId" element={<Profile />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/shipments" element={<AssignCouriers />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
