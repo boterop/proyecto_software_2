@@ -285,10 +285,13 @@ const AssignCouriers = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ py: 6 }}>
-        <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+      <Box sx={{ py: { xs: 1, md: 2 } }}>
+        <Paper elevation={0} variant="outlined" sx={{ p: { xs: 2.5, md: 4 }, borderRadius: 3 }}>
+          <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
             Asignar repartidores
+          </Typography>
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Elige un repartidor disponible para cada envío o consulta el historial de asignaciones.
           </Typography>
 
           {error && (

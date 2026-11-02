@@ -5,6 +5,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 
 const matches = (pattern, pathname) =>
   matchPath({ path: pattern, end: true }, pathname) !== null;
@@ -57,6 +58,14 @@ export const NAV_ITEMS = [
     isActive: (pathname) =>
       matches("/admin/users", pathname) ||
       matches("/profile/:userId", pathname),
+  },
+  {
+    id: "admin-shipments",
+    label: "Asignar repartidores",
+    to: "/admin/shipments",
+    icon: LocalShippingOutlinedIcon,
+    adminOnly: true,
+    isActive: (pathname) => matches("/admin/shipments", pathname),
   },
 ];
 
