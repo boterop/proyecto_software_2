@@ -13,6 +13,7 @@ import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAuth } from "@hooks/useAuth";
 import { TestLocation } from "@components";
@@ -208,7 +209,10 @@ const Home = () => {
         sx={{
           display: "grid",
           gap: 2,
-          gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+          gridTemplateColumns: {
+            xs: "1fr",
+            md: isAdmin ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))",
+          },
         }}
       >
         <ActionCard
@@ -225,6 +229,15 @@ const Home = () => {
             title="Administrar usuarios"
             description="Gestiona las cuentas y los roles."
             icon={AdminPanelSettingsOutlinedIcon}
+          />
+        )}
+        {isAdmin && (
+          <ActionCard
+            compact
+            to="/admin/shipments"
+            title="Asignar repartidores"
+            description="Asigna o reasigna envíos a los repartidores."
+            icon={LocalShippingOutlinedIcon}
           />
         )}
       </Box>
